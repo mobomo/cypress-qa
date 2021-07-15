@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: aws-sam-typescript-layers-example
+Transform:
+- AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Environment:
+      Variables:
+        REGION: ${AWS::Region}
+        SAMPLE_TABLE:
+          Ref: SampleTable
+        USERPOOL_ID:
+          Ref: UserPool
+        USERPOOL_CLIENT_ID:
+          Ref: UserPoolTokenClient
+        ITEM_QUEUE:
+          Ref: WriteQueue
+    Runtime: nodejs12.x
+    MemorySize: 128
+    Timeout: 100
+Resources:
+  ApiResource:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: true
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn:
+              Fn::GetAtt:
+              - UserPool
+              - Arn
+  getAllItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: getAllItemsFunction
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+      MemorySize: 2048
+      Description: A simple example includes a HTTP get method to get all items from
+        a DynamoDB table.
+      Environment:
+        Variables:
+          npm_config_cache: /opt/nodejs/.npm
+          CYPRESS_CACHE_FOLDER: /opt/nodejs/.cache
+      Layers:
+      - Ref: libs
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: ApiResource
+            Path: /
+            Method: GET
+  libs:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: chatapp-libs
+      Description: Dependencies for the blank sample app.
+      ContentUri: ../../src/layer
+      CompatibleRuntimes:
+      - nodejs12.x
+Outputs:
+  WebEndpoint:
+    Description: API Gateway endpoint URL for Prod stage
+    Value:
+      Fn::Sub: https://${ApiResource}.execute-api.${AWS::Region}.amazonaws.com/Prod/
