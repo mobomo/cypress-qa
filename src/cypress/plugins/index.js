@@ -19,6 +19,31 @@ module.exports = (on, config) => {
   on('task', {
     pluginExecuteCommand,
   });
+
+  on("after:run", function() {
+    console.log("hello");
+  });
+
+  on("before:browser:launch", (browser = {}, args) => {
+    // Disable shared memory when run headless since most CI environment do not support that
+    if (config.env.headless && browser.name === "chrome") {
+      args.push("--headless");
+      args.push("--disable-dev-shm-usage");
+      args.push("--disable-gpu");
+      args.push("--disable-software-rasterizer");
+      args.push("--single-process");
+      args.push("--no-zygote");
+      args.push("--no-sandbox");
+    } else if (config.env.headless && browser.name === "electron") {
+      args["headless"] = true;
+      args["disable-dev-shm-usage"] = true;
+      args["disable-gpu"] = true;
+      args["disable-software-rasterizer"] = true;
+      args["single-process"] = true;
+      args["no-zygote"] = true;
+      args["no-sandbox"] = true;
+    }
+  });
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   return cypressConfigResolver();
