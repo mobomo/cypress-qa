@@ -1,25 +1,17 @@
-# Cypress - Cucumber Example
+# Cypress QA
+
+## Requirements
+SAM CLI https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 
 ## Installing
 
 - Clone repo
-- Do `git submodule init`
-- Do `git submodule update`
-- npm install
- 
-Submodules where added as 
-```sh
-git submodule add git@github.com:jmarti-theinit/cypress-cucumber-examples-features.git gherkin-features
-```
+- sam build
+- sam local start-api
 
-Use your own repo doing:
+## Testing CLI
 
-```sh
-git submodule deinit gherkin-features
-git submodule add (YOUR_REPO_URL) gherkin-features
-git add --all
-git commit -m "Change repo url"
-```
+You can test the CLI by running `npm run test:prod` inside the container SAM builds. I overwrite the `--entrypoint` with `/bin/bash` and run it there.
 
 ## Warning
 
