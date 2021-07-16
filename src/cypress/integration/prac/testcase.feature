@@ -5,7 +5,7 @@ Feature: Body
     Given I am on the Report
     When I scroll lt"<link_text>" into view
     And I click the "<link_text>" link
-    And I wait 3 seconds
+    #And I wait 3 seconds
     Then I should see the text "<text_shown>"
 
 

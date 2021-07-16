@@ -8,18 +8,20 @@ exports.handler = async (event) => {
         body: JSON.stringify({"error": "could not finish"}),
     }
     await cypress.run({
-        browser: 'chrome',
+        browser: 'electron',
+        ignoreTestFiles: ["*.js", "*.md"],
+        reporter: "junit",
+        reporterOptions: {
+            "mochaFile": "test-results/test-output-[hash].xml"
+        },
         config: {
-            "baseUrl": "https://www.google.com",
+            "baseUrl": "https://www.pandemicoversight.gov",
             "ignoreTestFiles": ["*.js", "*.md"],
             "reporter": "junit",
             "reporterOptions": {
                 "mochaFile": "test-results/test-output-[hash].xml"
             },
             "chromeWebSecurity": false
-        },
-        env: {
-            "TAGS": "@e2e-test"
         },
         spec: 'cypress/integration/**/*.feature'
     }).then((results) => {

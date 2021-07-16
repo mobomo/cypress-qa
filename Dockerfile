@@ -16,6 +16,7 @@ RUN npm install
 # Copy actual code fast
 COPY src/cypress cypress
 COPY src/app.js app.js
-COPY src/cypress.json cypress.json
+RUN echo '{"projectID": "lambda"}' >> cypress.json
+#COPY src/cypress.json cypress.json
 
 CMD ["app.handler"]
