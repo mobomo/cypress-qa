@@ -1,6 +1,26 @@
 const cypress = require('cypress');
+const child_process = require("child_process");
 
 exports.handler = async (event) => {
+
+    process.env.DEBUG = "cypress:*";
+    process.env.ELECTRON_EXTRA_LAUNCH_ARGS = [
+        '--disable-dev-shm-usage',
+        '--disable-software-rasterizer',
+        '--disable-gpu',
+        '--user-data-dir=/tmp/user-data',
+        '--data-path=/tmp/data-path',
+        '--homedir=/tmp',
+        '--disk-cache-dir=/tmp/cache-dir',
+        "–-flag-switches-begin –-enable-webgl-draft-extensions –-ignore-gpu-blocklist –-flag-switches-end",
+    ].join(" ");
+
+    process.env.XDG_CONFIG_HOME = "/tmp"; //  https://github.com/electron/electron/blob/master/docs/api/app.md#appgetpathname
+
+    runCommand("mkdir /tmp/chrome-user-data");
+    runCommand("nohup Xvfb :99 &>/dev/null &");
+    runCommand("mkdir /tmp/shm");
+
     const {httpMethod, path} = event;
 
     let response = {
@@ -35,3 +55,15 @@ exports.handler = async (event) => {
 
     return response;
 }
+
+const runCommand = (command) => {
+    console.log("Running ", command);
+    try {
+        child_process.execSync(command, {
+            stdio: "inherit",
+        });
+    } catch (e) {
+        console.log("Error");
+        console.warn(e);
+    }
+};
