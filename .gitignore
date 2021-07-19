@@ -1,5 +1,6 @@
 .aws-sam
 samconfig.toml
+samconfig.toml.*
 src/cypress/videos
 node_modules/
 npm-debug.log

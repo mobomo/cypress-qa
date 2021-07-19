@@ -38,7 +38,7 @@ Resources:
     Type: AWS::Serverless::Function
     Metadata:
       DockerTag: nodejs14.x.0
-      DockerContext: .
+      DockerContext: ./
       Dockerfile: Dockerfile
     Properties:
       PackageType: Image

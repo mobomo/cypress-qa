@@ -24,6 +24,23 @@ module.exports = (on, config) => {
     console.log("hello");
   });
 
+  on("before:browser:launch", (browser = {}, args) => {
+    // Disable shared memory when run headless since most CI environment do not support that
+    if (config.env.headless && browser.name === "chromium") {
+      args.push("--disable-dev-shm-usage");
+      args.push("--disable-gpu");
+      args.push("--disable-gpu-sandbox");
+      args.push("--disable-software-rasterizer");
+      args.push("--single-process");
+      args.push("--no-zygote");
+      args.push("--no-sandbox");
+      args.push("--user-data-dir=/tmp/user-data");
+      args.push("--data-path=/tmp/data-path");
+      args.push("--homedir=/tmp");
+      args.push("--disk-cache-dir=/tmp/cache-dir");
+    }
+  });
+
   // on("before:browser:launch", (browser = {}, args) => {
   //   // Disable shared memory when run headless since most CI environment do not support that
   //   if (config.env.headless && browser.name === "chrome") {
