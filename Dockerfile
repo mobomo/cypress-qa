@@ -16,17 +16,24 @@ RUN /opt/vcpkg/bootstrap-vcpkg.sh \
     && ln -s /opt/vcpkg/packages/brotli_x64-linux/tools/brotli/brotli /opt/bin/brotli
 
 # Install chromium from working lambda binary
-RUN curl -L "https://raw.githubusercontent.com/alixaxel/chrome-aws-lambda/master/bin/chromium.br" -o /opt/chromium.br
-RUN brotli --decompress /opt/chromium.br \
-   && rm /opt/chromium.br \
-   && chmod +x /opt/chromium \
-   && echo $'#!/bin/bash \n\
-      if [ "$1" == "--version" ]; then \n\
-        echo "Chromium 64.0.3282.119 built on Debian 9.3, running on Debian 9.4"; \n\
-      else \n\
-        /opt/chromium $@ \n\
-      fi' >> /opt/bin/chromium \
-   && chmod +x /opt/bin/chromium
+RUN curl -L "https://raw.githubusercontent.com/alixaxel/chrome-aws-lambda/master/bin/chromium.br" -o /opt/chromium.br \
+    && brotli --decompress /opt/chromium.br \
+    && rm /opt/chromium.br \
+    && chmod +x /opt/chromium \
+    && echo $'#!/bin/bash \n\
+       if [ "$1" == "--version" ]; then \n\
+         echo "Chromium 64.0.3282.119 built on Debian 9.3, running on Debian 9.4"; \n\
+       else \n\
+         /opt/chromium $@ \n\
+       fi' >> /opt/bin/chromium \
+    && chmod +x /opt/bin/chromium
+
+RUN mkdir /opt/swiftshader \
+    && curl -L "https://raw.githubusercontent.com/alixaxel/chrome-aws-lambda/master/bin/swiftshader.tar.br" -o /opt/swiftshader/swiftshader.tar.br \
+    && brotli --decompress /opt/swiftshader/swiftshader.tar.br \
+    && rm /opt/swiftshader/swiftshader.tar.br \
+    && tar -xf /opt/swiftshader/swiftshader.tar -C /opt/swiftshader \
+    && rm /opt/swiftshader/swiftshader.tar
 
 ## Install chromium from headless repo
 #RUN yum install -y unzip curl \
@@ -58,16 +65,21 @@ ENV CYPRESS_CACHE_FOLDER="/opt/nodejs/.cache"
 # Speed up builds by not having to redownload cypress
 RUN npm install cypress@7.7.0
 
-COPY src/package.json package.json
-COPY src/package-lock.json package-lock.json
+# https://github.com/cypress-io/cypress/issues/4333
+RUN npx cypress verify
 
-RUN npm install
+RUN mkdir /app
+COPY src/package.json /app/package.json
+COPY src/package-lock.json /app/package-lock.json
+
+RUN npm install --prefix /app
 
 # Copy actual code fast
-COPY src/cypress cypress
-COPY src/app.js app.js
-RUN echo '{"projectID": "lambda"}' >> cypress.json
+COPY src/cypress /app/cypress
+RUN echo '{"projectID": "lambda"}' >> /app/cypress.json
+
 #COPY src/cypress.json cypress.json
 
+COPY src/app.js app.js
 
 CMD ["app.handler"]
