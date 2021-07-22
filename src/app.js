@@ -1,10 +1,17 @@
-exports.handler = async (event) => {
+const AWS = require('aws-sdk');
+const cypress = require('cypress');
+const child_process = require("child_process");
+const isLocal = process.env.AWS_SAM_LOCAL || !!process.env.LAMBDA_TASK_ROOT;
 
-    process.chdir('/tmp');
+exports.handler = async (event, context) => {
 
-    const cypress = require('cypress');
+    setup();
+
+    // Get our temp location for the test specs.
+    let specLocation = context.awsRequestId ?? 'default';
 
     process.env.DEBUG = "cypress:*";
+    // Needed for the Cypress binary to work prior to starting tests.
     process.env.ELECTRON_EXTRA_LAUNCH_ARGS = [
         '--allow-running-insecure-content', // https://source.chromium.org/search?q=lang:cpp+symbol:kAllowRunningInsecureContent&ss=chromium
         '--autoplay-policy=user-gesture-required', // https://source.chromium.org/search?q=lang:cpp+symbol:kAutoplayPolicy&ss=chromium
@@ -31,19 +38,6 @@ exports.handler = async (event) => {
     ].join(" ");
 
     process.env.XDG_CONFIG_HOME = "/tmp"; //  https://github.com/electron/electron/blob/master/docs/api/app.md#appgetpathname
-
-    if (!fileExists('/tmp/chrome-user-data')) {
-        runCommand("mkdir /tmp/chrome-user-data");
-    }
-    if (!fileExists('/tmp/shm')) {
-        runCommand("mkdir /tmp/shm");
-    }
-    if (!fileExists('/tmp/node_modules')) {
-        runCommand("cp -R /app/node_modules /tmp/node_modules");
-    }
-
-    runCommand("cp /app/cypress.json /tmp/cypress.json");
-    runCommand("cp -R /app/cypress /tmp/cypress");
 
     const {httpMethod, path} = event;
 
@@ -72,11 +66,47 @@ exports.handler = async (event) => {
         headed: false,
         headless: true,
         spec: 'cypress/integration/**/*.feature'
-    }).then((results) => {
+    }).then(async (results) => {
         response = {
             statusCode: 200,
             body: JSON.stringify(results),
         };
+
+        if (isLocal && fileExists('/video')) {
+            runCommand("cp -R /tmp/tests/cypress/videos/prac/*.mp4 /video/");
+        }
+        else {
+            AWS.config.update({region: 'us-east-1'});
+            var s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+            var uploadParams = {Bucket: 'qa-cypress-testresultbucket-stvmqxwbibbt', Key: '', Body: ''};
+            var file = '/tmp/tests/cypress/videos/prac/testcase.feature.mp4';
+
+            // Configure the file stream and obtain the upload parameters
+            var fs = require('fs');
+            var fileStream = fs.createReadStream(file);
+            fileStream.on('error', function(err) {
+                console.log('File Error', err);
+            });
+            uploadParams.Body = fileStream;
+            var path = require('path');
+            uploadParams.Key = path.basename(file);
+
+            // call S3 to retrieve upload file to specified bucket
+
+            await new Promise((accept,reject) => {
+                s3.upload(uploadParams, function (err, data) {
+                    if (err) {
+                        console.log("Error", err);
+                        accept();
+                    }
+                    if (data) {
+                        console.log("Upload Success", data.Location);
+                        reject();
+                    }
+                });
+            });
+        }
     }).catch((err) => {
         console.error(err)
     })
@@ -85,7 +115,6 @@ exports.handler = async (event) => {
 }
 
 const runCommand = (command) => {
-    const child_process = require("child_process");
 
     console.log("Running ", command);
     try {
@@ -107,4 +136,28 @@ const fileExists = (file) => {
     } catch (err) {
         return false;
     }
+}
+
+function setup() {
+    if (!fileExists('/tmp/tests')) {
+        runCommand("mkdir /tmp/tests");
+    }
+
+    process.chdir('/tmp/tests');
+
+    // Setup files to run in Lambda temp space
+    if (!fileExists('/tmp/chrome-user-data')) {
+        runCommand("mkdir /tmp/chrome-user-data");
+    }
+    if (!fileExists('/tmp/shm')) {
+        runCommand("mkdir /tmp/shm");
+    }
+    if (!fileExists('/tmp/tests/node_modules')) {
+        runCommand("cp -R /app/node_modules /tmp/tests/node_modules");
+        runCommand("cp /app/cypress.json /tmp/tests/cypress.json");
+        runCommand("cp /app/package.json /tmp/tests/package.json");
+        runCommand("cp /app/package-lock.json /tmp/tests/package-lock.json");
+    }
+
+    runCommand("cp -R /app/cypress /tmp/tests/cypress");
 }

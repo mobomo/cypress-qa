@@ -3,6 +3,14 @@ import Homepage from '../../pages/prac/homepage';
 import Report from '../../pages/prac/report';
 import Browser from '../../pages/browser';
 
+Given(/^I am on the Report$/, () => {
+  Report.visit();
+});
+
+Given(/^I am on the Homepage$/, () => {
+  Homepage.visit();
+});
+
 When(/^I click the "(.*)" link$/, (word) => {
   Browser.clickLink(word);
 });

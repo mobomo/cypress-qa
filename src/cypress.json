@@ -1,5 +1,5 @@
 {
-  "baseUrl": "https://www.google.es",
+  "baseUrl": "https://www.pandemicoversight.gov",
   "ignoreTestFiles": ["*.js", "*.md"],
   "reporter": "junit",
   "reporterOptions": {

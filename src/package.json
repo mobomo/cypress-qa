@@ -18,6 +18,7 @@
   "author": "",
   "license": "Private",
   "dependencies": {
+    "aws-sdk": "^2.951.0",
     "axios": "^0.21.0",
     "cypress": "^7.7.0",
     "cypress-cucumber-preprocessor": "^4.1.4",

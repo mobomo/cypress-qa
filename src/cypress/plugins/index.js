@@ -60,6 +60,9 @@ module.exports = (on, config) => {
 
       console.log("ADDED CHROMIUM ARGS");
     }
+    else {
+
+    }
 
     return launchOptions;
   });

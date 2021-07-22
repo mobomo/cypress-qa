@@ -49,37 +49,43 @@ RUN mkdir /opt/swiftshader \
 #fi' >> /opt/bin/chromium \
 #  && chmod +x /opt/bin/chromium
 
+# Install Cypress
+ENV npm_config_cache="/opt/nodejs/.npm"
+ENV CYPRESS_CACHE_FOLDER="/opt/nodejs/.cypress"
+ENV XDG_CONFIG_HOME="/tmp"
+ENV NODE_PATH="/var/lang/lib/node_modules/"
+
+# Speed up builds by not having to redownload cypress
+RUN npm install --unsafe-perm=true --allow-root -g cypress@7.7.0
+RUN npm install --unsafe-perm=true --allow-root -g aws-sdk
+
 # Patch Cypress binary to not use /dev/shm
 RUN echo $'#!/bin/bash \n\
-position=$(strings -t d /opt/nodejs/.cache/7.7.0/Cypress/Cypress | grep "/dev/shm" | cut -d" " -f1) \n\
+position=$(strings -t d /opt/nodejs/.cypress/7.7.0/Cypress/Cypress | grep "/dev/shm" | cut -d" " -f1) \n\
 for i in $position; do \n\
-    echo -n "/tmp/shm/" | dd bs=1 of=/opt/nodejs/.cache/7.7.0/Cypress/Cypress seek="$i" conv=notrunc \n\
+    echo -n "/tmp/shm/" | dd bs=1 of=/opt/nodejs/.cypress/7.7.0/Cypress/Cypress seek="$i" conv=notrunc \n\
 done' >> /opt/patch.sh
 RUN chmod +x /opt/patch.sh
 RUN /opt/patch.sh
 
-# Install Cypress
-ENV npm_config_cache="/opt/nodejs/.npm"
-ENV CYPRESS_CACHE_FOLDER="/opt/nodejs/.cache"
-
-# Speed up builds by not having to redownload cypress
-RUN npm install cypress@7.7.0
-
 # https://github.com/cypress-io/cypress/issues/4333
 RUN npx cypress verify
 
+# Install the app dependencies
 RUN mkdir /app
 COPY src/package.json /app/package.json
 COPY src/package-lock.json /app/package-lock.json
 
 RUN npm install --prefix /app
 
-# Copy actual code fast
+# Copy actual base cypress code
 COPY src/cypress /app/cypress
 RUN echo '{"projectID": "lambda"}' >> /app/cypress.json
 
-#COPY src/cypress.json cypress.json
-
+# Copy lambda function handler
 COPY src/app.js app.js
+
+# clean up
+RUN rm -rf /tmp/*
 
 CMD ["app.handler"]

@@ -27,6 +27,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
+      BinaryMediaTypes:
       Auth:
         DefaultAuthorizer: NONE
 
@@ -43,14 +44,28 @@ Resources:
     Properties:
       PackageType: Image
       Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Policies:
+        - Statement:
+            - Sid: TestBucketFullAccess
+              Effect: Allow
+              Action:
+                - s3:*
+              Resource:
+                - !GetAtt TestResultBucket.Arn
+                - !Join
+                  - ''
+                  - - !GetAtt TestResultBucket.Arn
+                    - '/*'
       Events:
         Api:
           Type: Api
           Properties:
             RestApiId: !Ref ApiResource
             Path: /
-            Method: GET
+            Method: ANY
 
+  TestResultBucket:
+    Type: 'AWS::S3::Bucket'
 
 Outputs:
   WebEndpoint:
