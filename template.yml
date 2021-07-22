@@ -40,7 +40,7 @@ Resources:
     Metadata:
       DockerTag: nodejs14.x.0
       DockerContext: ./
-      Dockerfile: Dockerfile
+      Dockerfile: docker-src/lambda.Dockerfile
     Properties:
       PackageType: Image
       Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.

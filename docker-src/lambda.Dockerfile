@@ -83,9 +83,9 @@ COPY src/cypress /app/cypress
 RUN echo '{"projectID": "lambda"}' >> /app/cypress.json
 
 # Copy lambda function handler
-COPY src/app.js app.js
+COPY src/lambda.js lambda.js
 
 # clean up
 RUN rm -rf /tmp/*
 
-CMD ["app.handler"]
+CMD ["lambda.handler"]
