@@ -72,6 +72,47 @@ Resources:
       Handler: index.handler
       Runtime: nodejs14.x
       Description: A function that ideally would run a test
+      Environment:
+        Variables:
+          ECS_CLUSTER: !Ref ECSCluster
+          ECS_TASKDEF: !Ref ECSBaseTaskDef
+      Policies:
+        - Statement:
+            - Sid: TestBucketFullAccess
+              Effect: Allow
+              Action:
+                - s3:*
+              Resource:
+                - !GetAtt TestResultBucket.Arn
+                - !Join
+                  - ''
+                  - - !GetAtt TestResultBucket.Arn
+                    - '/*'
+            - Sid: ECSRunAccess
+              Effect: Allow
+              Action:
+                - ecs:RunTask
+              Condition:
+                ArnEquals:
+                  ecs:cluster: !GetAtt ECSCluster.Arn
+              Resource:
+                - !Ref ECSBaseTaskDef
+            - Sid: ECSPassRole
+              Effect: Allow
+              Action:
+                - iam:GetRole
+                - iam:PassRole
+              Resource:
+                - !GetAtt ECSExecutionRole.Arn
+                - !GetAtt ECSTaskRole.Arn
+            - Sid: EC2Describe
+              Effect: Allow
+              Action:
+                - ec2:DescribeSubnets
+                - ec2:DescribeSecurityGroups
+                - ec2:DescribeVpcs
+              Resource:
+                - '*'
       Events:
         Api:
           Type: Api
