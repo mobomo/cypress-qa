@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const cypress = require('cypress');
 const child_process = require("child_process");
-const isLocal = process.env.AWS_SAM_LOCAL || !!process.env.LAMBDA_TASK_ROOT;
+const isLocal = !!process.env.AWS_SAM_LOCAL || !process.env.LAMBDA_TASK_ROOT;
 
 exports.handler = async (event, context) => {
 
@@ -10,7 +10,7 @@ exports.handler = async (event, context) => {
     // Get our temp location for the test specs.
     let specLocation = context.awsRequestId ?? 'default';
 
-    process.env.DEBUG = "cypress:*";
+    //process.env.DEBUG = "cypress:*";
     // Needed for the Cypress binary to work prior to starting tests.
     process.env.ELECTRON_EXTRA_LAUNCH_ARGS = [
         '--allow-running-insecure-content', // https://source.chromium.org/search?q=lang:cpp+symbol:kAllowRunningInsecureContent&ss=chromium
@@ -72,14 +72,16 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(results),
         };
 
-        if (isLocal && fileExists('/video')) {
-            runCommand("cp -R /tmp/tests/cypress/videos/prac/*.mp4 /video/");
+        if (isLocal) {
+            if (fileExists('/video')) {
+                runCommand("cp -R /tmp/tests/cypress/videos/prac/*.mp4 /video/");
+            }
         }
         else {
             AWS.config.update({region: 'us-east-1'});
             var s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
-            var uploadParams = {Bucket: 'qa-cypress-testresultbucket-stvmqxwbibbt', Key: '', Body: ''};
+            var uploadParams = {Bucket: process.env.RESULTS_BUCKET, Key: '', Body: ''};
             var file = '/tmp/tests/cypress/videos/prac/testcase.feature.mp4';
 
             // Configure the file stream and obtain the upload parameters

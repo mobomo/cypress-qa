@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/nodejs:14
+FROM amazonlinux:latest
 
 # Dependencies for Cypress
 RUN yum install -y tar xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel GConf2 nss libXScrnSaver alsa-lib
@@ -8,6 +8,8 @@ RUN yum install -y curl git zip unzip tar gcc gcc-c++
 RUN git clone https://github.com/Microsoft/vcpkg.git /opt/vcpkg
 
 ENV CXX="g++"
+
+ENV PATH="/opt/bin:${PATH}"
 
 RUN /opt/vcpkg/bootstrap-vcpkg.sh \
     && /opt/vcpkg/vcpkg integrate install \
@@ -49,24 +51,30 @@ RUN mkdir /opt/swiftshader \
 #fi' >> /opt/bin/chromium \
 #  && chmod +x /opt/bin/chromium
 
+ENV NVM_VERSION 0.38.0
+ENV NODE_VERSION 14.17.3
+ENV NVM_DIR /usr/local/nvm
+
+# Install nvm/npm/node
+RUN mkdir $NVM_DIR
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v$NVM_VERSION/install.sh | bash
+RUN source $NVM_DIR/nvm.sh \
+    && nvm install v$NODE_VERSION \
+    && nvm alias default v$NODE_VERSION \
+    && nvm use default
+
+# Override version with full version.
+ENV NODE_PATH=$NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
 # Install Cypress
 ENV npm_config_cache="/opt/nodejs/.npm"
 ENV CYPRESS_CACHE_FOLDER="/opt/nodejs/.cypress"
-ENV XDG_CONFIG_HOME="/tmp"
 ENV NODE_PATH="/var/lang/lib/node_modules/"
 
 # Speed up builds by not having to redownload cypress
 RUN npm install --unsafe-perm=true --allow-root -g cypress@7.7.0
 RUN npm install --unsafe-perm=true --allow-root -g aws-sdk
-
-# Patch Cypress binary to not use /dev/shm
-RUN echo $'#!/bin/bash \n\
-position=$(strings -t d /opt/nodejs/.cypress/7.7.0/Cypress/Cypress | grep "/dev/shm" | cut -d" " -f1) \n\
-for i in $position; do \n\
-    echo -n "/tmp/shm/" | dd bs=1 of=/opt/nodejs/.cypress/7.7.0/Cypress/Cypress seek="$i" conv=notrunc \n\
-done' >> /opt/patch.sh
-RUN chmod +x /opt/patch.sh
-RUN /opt/patch.sh
 
 # https://github.com/cypress-io/cypress/issues/4333
 RUN npx cypress verify
@@ -80,12 +88,11 @@ RUN npm install --prefix /app
 
 # Copy actual base cypress code
 COPY src/cypress /app/cypress
-RUN echo '{"projectID": "lambda"}' >> /app/cypress.json
-
-# Copy lambda function handler
-COPY src/functions/cypress.js lambda.js
+COPY src/cypress.json /app/cypress.json
 
 # clean up
 RUN rm -rf /tmp/*
 
-CMD ["lambda.handler"]
+WORKDIR /app
+
+CMD ["npm", "run", "test"]

@@ -17,6 +17,7 @@ Globals:
     Environment:
       Variables:
         REGION: ${AWS::Region}
+        RESULTS_BUCKET: !Ref TestResultBucket
     Timeout: 100
     MemorySize: 2048
 
@@ -35,10 +36,10 @@ Resources:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   # This is a Lambda function config associated with the source code: get-all-items.js
-  getAllItemsFunction:
+  cypressLambda:
     Type: AWS::Serverless::Function
     Metadata:
-      DockerTag: nodejs14.x.0
+      DockerTag: cypress-lambda
       DockerContext: ./
       Dockerfile: docker-src/lambda.Dockerfile
     Properties:
@@ -61,13 +62,119 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref ApiResource
+            Path: /lambda
+            Method: ANY
+
+  Runtest:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/functions/runtest
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Description: A function that ideally would run a test
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiResource
             Path: /
             Method: ANY
 
   TestResultBucket:
-    Type: 'AWS::S3::Bucket'
+    Type: AWS::S3::Bucket
 
+  ECSRepository:
+    Type: AWS::ECR::Repository
+
+  ECSBaseTaskDef:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      RequiresCompatibilities:
+        - FARGATE
+      NetworkMode: awsvpc
+      Cpu: 1024
+      Memory: 2048
+      ExecutionRoleArn: !Ref ECSExecutionRole
+      TaskRoleArn: !Ref ECSTaskRole
+      ContainerDefinitions:
+        - Name: cypress
+          Image: !Join
+            - ''
+            - - !GetAtt ECSRepository.RepositoryUri
+              - ':latest'
+          Essential: true
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref ECSLogGroup
+              awslogs-stream-prefix: ecs
+
+  ECSExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
+
+  # PolicyDocuments at the IAM role require JSON strings
+  ECSExecutionRolePolicies:
+    Type: AWS::IAM::Policy
+    DependsOn:
+      - TestResultBucket
+    Properties:
+      PolicyName: TestBucketFullAccess
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !GetAtt TestResultBucket.Arn
+              - !Join
+                - ''
+                - - !GetAtt TestResultBucket.Arn
+                  - '/*'
+      Roles:
+        - !Ref ECSExecutionRole
+
+  ECSTaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+
+  ECSLogGroup:
+    Type: AWS::Logs::LogGroup
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      CapacityProviders:
+        - FARGATE
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
 Outputs:
   WebEndpoint:
-    Description: "API Gateway endpoint URL for Prod stage"
+    Description: API Gateway endpoint URL for Prod stage
     Value: !Sub "https://${ApiResource}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  Repository:
+    Description: ECS Repository URL
+    Value: !GetAtt ECSRepository.RepositoryUri
+  Task:
+    Description: ECS Task Definition
+    Value: !Ref ECSBaseTaskDef
+  Cluster:
+    Description: ECS Cluster
+    Value: !Ref ECSCluster
