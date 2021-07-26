@@ -36,7 +36,7 @@ Resources:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   # This is a Lambda function config associated with the source code: get-all-items.js
-  cypressLambda:
+  cypressLambdaFunction:
     Type: AWS::Serverless::Function
     Metadata:
       DockerTag: cypress-lambda
@@ -65,7 +65,7 @@ Resources:
             Path: /lambda
             Method: ANY
 
-  Runtest:
+  RunTestFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/functions/runtest
@@ -78,16 +78,6 @@ Resources:
           ECS_TASKDEF: !Ref ECSBaseTaskDef
       Policies:
         - Statement:
-            - Sid: TestBucketFullAccess
-              Effect: Allow
-              Action:
-                - s3:*
-              Resource:
-                - !GetAtt TestResultBucket.Arn
-                - !Join
-                  - ''
-                  - - !GetAtt TestResultBucket.Arn
-                    - '/*'
             - Sid: ECSRunAccess
               Effect: Allow
               Action:
@@ -116,6 +106,33 @@ Resources:
       Events:
         Api:
           Type: Api
+          Properties:
+            RestApiId: !Ref ApiResource
+            Path: /
+            Method: ANY
+
+  RunCompleteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/functions/runcomplete
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Description: A function that responds to ECS task ending
+      Policies:
+        - Statement:
+            - Sid: TestBucketFullAccess
+              Effect: Allow
+              Action:
+                - s3:*
+              Resource:
+                - !GetAtt TestResultBucket.Arn
+                - !Join
+                  - ''
+                  - - !GetAtt TestResultBucket.Arn
+                    - '/*'
+      Events:
+        CloudWatchEvent:
+          Type: CloudWatchEvent
           Properties:
             RestApiId: !Ref ApiResource
             Path: /

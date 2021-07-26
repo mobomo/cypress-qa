@@ -1,10 +1,52 @@
-FROM public.ecr.aws/lambda/nodejs:14
+FROM public.ecr.aws/lambda/nodejs:14 as base
 
 # Dependencies for Cypress
-RUN yum install -y tar xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel GConf2 nss libXScrnSaver alsa-lib
+RUN yum install -y xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel GConf2 nss libXScrnSaver alsa-lib binutils
 
+# Install Cypress
+ENV npm_config_cache="/opt/nodejs/.npm"
+ENV CYPRESS_CACHE_FOLDER="/opt/nodejs/.cypress"
+ENV XDG_CONFIG_HOME="/tmp"
+ENV NODE_PATH="/var/lang/lib/node_modules/"
+
+# Speed up builds by not having to redownload cypress
+RUN npm install --unsafe-perm=true --allow-root -g cypress@7.7.0
+RUN npm install --unsafe-perm=true --allow-root -g aws-sdk
+
+# Patch Cypress binary to not use /dev/shm
+RUN echo $'#!/bin/bash \n\
+position=$(strings -t d /opt/nodejs/.cypress/7.7.0/Cypress/Cypress | grep "/dev/shm" | cut -d" " -f1) \n\
+for i in $position; do \n\
+    echo -n "/tmp/shm/" | dd bs=1 of=/opt/nodejs/.cypress/7.7.0/Cypress/Cypress seek="$i" conv=notrunc \n\
+done' >> /opt/patch.sh
+RUN chmod +x /opt/patch.sh
+RUN /opt/patch.sh
+
+# https://github.com/cypress-io/cypress/issues/4333
+RUN npx cypress verify
+
+# Install the app dependencies
+RUN mkdir /app
+COPY src/package.json /app/package.json
+COPY src/package-lock.json /app/package-lock.json
+
+RUN npm install --prefix /app
+
+# Copy actual base cypress code
+COPY src/cypress /app/cypress
+RUN echo '{"projectID": "lambda"}' >> /app/cypress.json
+
+# Copy lambda function handler
+COPY src/functions/cypress.js lambda.js
+
+# clean up
+RUN rm -rf /tmp/*
+
+CMD ["lambda.handler"]
+
+FROM public.ecr.aws/lambda/nodejs:14 as builder
 # Dependencies for Brotli
-RUN yum install -y curl git zip unzip tar gcc gcc-c++
+RUN yum install -y git zip unzip tar gcc gcc-c++ pkgconfig curl
 RUN git clone https://github.com/Microsoft/vcpkg.git /opt/vcpkg
 
 ENV CXX="g++"
@@ -49,43 +91,9 @@ RUN mkdir /opt/swiftshader \
 #fi' >> /opt/bin/chromium \
 #  && chmod +x /opt/bin/chromium
 
-# Install Cypress
-ENV npm_config_cache="/opt/nodejs/.npm"
-ENV CYPRESS_CACHE_FOLDER="/opt/nodejs/.cypress"
-ENV XDG_CONFIG_HOME="/tmp"
-ENV NODE_PATH="/var/lang/lib/node_modules/"
+FROM base as browser
 
-# Speed up builds by not having to redownload cypress
-RUN npm install --unsafe-perm=true --allow-root -g cypress@7.7.0
-RUN npm install --unsafe-perm=true --allow-root -g aws-sdk
-
-# Patch Cypress binary to not use /dev/shm
-RUN echo $'#!/bin/bash \n\
-position=$(strings -t d /opt/nodejs/.cypress/7.7.0/Cypress/Cypress | grep "/dev/shm" | cut -d" " -f1) \n\
-for i in $position; do \n\
-    echo -n "/tmp/shm/" | dd bs=1 of=/opt/nodejs/.cypress/7.7.0/Cypress/Cypress seek="$i" conv=notrunc \n\
-done' >> /opt/patch.sh
-RUN chmod +x /opt/patch.sh
-RUN /opt/patch.sh
-
-# https://github.com/cypress-io/cypress/issues/4333
-RUN npx cypress verify
-
-# Install the app dependencies
-RUN mkdir /app
-COPY src/package.json /app/package.json
-COPY src/package-lock.json /app/package-lock.json
-
-RUN npm install --prefix /app
-
-# Copy actual base cypress code
-COPY src/cypress /app/cypress
-RUN echo '{"projectID": "lambda"}' >> /app/cypress.json
-
-# Copy lambda function handler
-COPY src/functions/cypress.js lambda.js
-
-# clean up
-RUN rm -rf /tmp/*
-
-CMD ["lambda.handler"]
+RUN mkdir /opt/bin
+COPY --from=builder /opt/bin/chromium /opt/bin/chromium
+COPY --from=builder /opt/chromium /opt/chromium
+COPY --from=builder /opt/swiftshader /opt/swiftshader

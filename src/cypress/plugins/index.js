@@ -62,6 +62,15 @@ module.exports = (on, config) => {
         console.log("ADDED CHROMIUM ARGS");
       }
     }
+    else {
+      if (browser.name === 'electron') {
+        launchOptions.preferences.fullscreen = false;
+        launchOptions.preferences.fullscreenable = false;
+        launchOptions.preferences.maximizable = false;
+        launchOptions.preferences.width = 1920;
+        launchOptions.preferences.height = 1080;
+      }
+    }
 
     return launchOptions;
   });

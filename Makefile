@@ -1,53 +1,100 @@
-.PHONY: build ecr-build ecr-login ecr-push test test2 test3 ssh deploy
+.PHONY: build ecr-build ecr-login ecr-push test test2 test3 ssh deploy local-test local-build local-debug local-ssh
 
 build:
 	sam build
 
+deploy:
+	sam deploy --profile qa --config-env=qa
+
+local-build:
+	docker build \
+        --progress plain \
+        -f ./docker-src/Dockerfile \
+        -t mobomo/cypress .
+
+local-test:
+	docker run -it \
+        -v "${shell pwd}/src/cypress:/app/cypress" \
+        mobomo/cypress
+
+local-debug:
+	docker run -it \
+        -v "${shell pwd}/src/cypress:/app/cypress" \
+        mobomo/cypress \
+        npm run test:debug
+
+local-xpra:
+	docker run -it \
+        -v "${shell pwd}/src/cypress:/app/cypress" \
+        -e DISPLAY=:0 \
+        -p 10000:10000 \
+        mobomo/cypress \
+        xpra start --bind-tcp=0.0.0.0:10000 --start-child=xterm --html=on --daemon=no
+
+local-example:
+	docker run -it \
+        -v "${shell pwd}/example/integration:/app/cypress/integration/prac" \
+        -v "${shell pwd}/example/pages:/app/cypress/pages/prac" \
+        -v "${shell pwd}/example/cypress.json:/app/cypress.json" \
+        -p 10000:10000 \
+        mobomo/cypress \
+        npm run test:debug
+
+local-ssh:
+	docker run -it \
+        -v "${shell pwd}/src:/app" \
+        --entrypoint "/bin/bash" \
+        mobomo/cypress
+
 ecr-build:
 	docker build \
-	--progress plain \
-	-f ./docker-src/ecs.Dockerfile \
-	-t mobomo/ecstest .
+        --progress plain \
+        -f ./docker-src/ecs.Dockerfile \
+        -t mobomo/ecstest .
+
+ecr-test:
+	docker run -it \
+        mobomo/ecstest
 
 ecr-login:
 	aws ecr get-login-password \
-    --profile qa \
-    --region us-east-1 | docker login \
-    --username AWS \
-    --password-stdin \
-    834666424999.dkr.ecr.us-east-1.amazonaws.com/cypress-qa-ecsrepository-qxpw7ougd7qk
+        --profile qa \
+        --region us-east-1 | docker login \
+        --username AWS \
+        --password-stdin \
+        834666424999.dkr.ecr.us-east-1.amazonaws.com/cypress-qa-ecsrepository-qxpw7ougd7qk
 
 ecr-push:
 	docker tag \
-    mobomo/ecstest \
-    834666424999.dkr.ecr.us-east-1.amazonaws.com/cypress-qa-ecsrepository-qxpw7ougd7qk:latest
+        mobomo/ecstest \
+        834666424999.dkr.ecr.us-east-1.amazonaws.com/cypress-qa-ecsrepository-qxpw7ougd7qk:latest
 	docker push \
-	834666424999.dkr.ecr.us-east-1.amazonaws.com/cypress-qa-ecsrepository-qxpw7ougd7qk:latest
+	    834666424999.dkr.ecr.us-east-1.amazonaws.com/cypress-qa-ecsrepository-qxpw7ougd7qk:latest
 
-test:
+lambda-test:
 	docker run -it \
         -v "${shell pwd}/src:/app" \
         -v "${shell pwd}/video:/video" \
         --entrypoint "/var/lang/bin/node" \
-        getallitemsfunction:nodejs14.x.0 \
+        cypresslambdafunction:cypress-lambda \
         -e 'require("./lambda").handler({"httpMethod":"GET"}, {"awsRequestId": "default"})'
-test2:
+
+lambda-test2:
 	docker run -it \
         -v "${shell pwd}/video:/video" \
         --entrypoint "/var/lang/bin/node" \
         --user 1042 \
-        getallitemsfunction:nodejs14.x.0 \
+        cypresslambdafunction:cypress-lambda \
         -e 'require("./lambda").handler({"httpMethod":"GET"}, {"awsRequestId": "default"})'
-ssh:
+
+lambda-ssh:
 	docker run -it \
 	    -v "${shell pwd}/src:/app" \
         --workdir "/app" \
 	    --entrypoint "/bin/bash" \
-	    getallitemsfunction:nodejs14.x.0
-ssh2:
-	docker exec -it \
-    $(shell docker ps -q --filter="ancestor=getallitemsfunction:nodejs14.x.0") \
-    /bin/bash
+	    cypresslambdafunction:cypress-lambda
 
-deploy:
-	sam deploy --profile qa --config-env=qa
+lambda-ssh2:
+	docker exec -it \
+    $(shell docker ps -q --filter="ancestor=cypresslambdafunction:cypress-lambda") \
+    /bin/bash
