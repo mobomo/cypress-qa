@@ -63,5 +63,5 @@ Feature: Body
     When I fill out the field labeled "Alternative text" with value "alt text example"
     And I click the ".js-form-submit:contains('Save')" element
     And I click the ".js-form-submit:contains('Insert selected')" element
-    Then I submit the form
-    Then I should be on the user profile path
+    Then I should see the element ".media-library-item__remove"
+    Then I click the "#node-about-office-form #edit-actions #edit-submit" element

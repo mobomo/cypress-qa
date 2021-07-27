@@ -74,6 +74,16 @@ When(/^I fill out the field labeled "(.*)" with value "(.*)"$/, (label, value) =
 });
 
 When(/^I submit the form$/, (id, value) => {
+  // cy.intercept({
+  //   headers: {
+  //     'X-Requested-With': 'XMLHttpRequest'
+  //   }
+  // }).as('xhr');
+  //
+  // cy.wait('@xhr').catch((err) => {
+  //   cy.log('No XHR request present');
+  // });
+
   cy.get('@form').submit();
 });
 
