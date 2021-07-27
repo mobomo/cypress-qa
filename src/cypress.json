@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://dev.nesdis.acsitefactory.com",
+  "baseUrl": "http://host.docker.internal:8080",
   "ignoreTestFiles": ["*.js", "*.md"],
   "reporter": "junit",
   "reporterOptions": {

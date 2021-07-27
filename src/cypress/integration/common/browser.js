@@ -11,11 +11,19 @@ When(/^I click the "(.*)" link$/, (word) => {
   Browser.clickLink(word);
 });
 
+When(/^I click the "(.*)" button$/, (element) => {
+  Browser.clickButton(element);
+});
+
+When(/^I click the "(.*)" element$/, (element) => {
+  Browser.clickElement(element);
+});
+
 When(/^I click on "(.*)"$/, (word) => {
   Browser.click(word);
 });
 
-When(/^I scroll lt"(.*)" into view$/, (word) => {
+When(/^I scroll "(.*)" into view$/, (word) => {
   Browser.scrollTo(word);
 });
 
@@ -52,10 +60,31 @@ When(/^I fill out text fields with values$/, (dataTable) => {
   });
 });
 
-When(/^I fill out "(.*)" field with value "(.*)"$/, (id, value) => {
-  cy.get('#' + id).type(value);
+When(/^I fill out the field element "(.*)" with value "(.*)"$/, (element, value) => {
+  cy.get(element).type(value);
+});
+
+When(/^I fill out the field labeled "(.*)" with value "(.*)"$/, (label, value) => {
+
+  cy.log(label);
+  console.log(label);
+  cy.get('label').contains(label).then( (el) => {
+    cy.get('#' + el.attr('for')).type(value);
+  })
 });
 
 When(/^I submit the form$/, (id, value) => {
   cy.get('@form').submit();
+});
+
+Then(/^I preserve cookies$/, (id, value) => {
+  Browser.preserveCookies();
+});
+
+Then(/^I clear cookies$/, (id, value) => {
+  Browser.clearCookies();
+});
+
+Then(/^I fill in the "(.*)" field with file "(.*)" of type "(.*)"$/, (element, fixture, type) => {
+  Browser.uploadFile(fixture, type, element)
 });

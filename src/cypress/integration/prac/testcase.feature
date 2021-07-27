@@ -15,7 +15,7 @@ Feature: Body
     When I fill out text fields with values
       | id         | value     |
       | edit-name  | Username  |
-    When I fill out "edit-pass" field with value "Password"
+    When I fill out the field element "#edit-pass" with value "Password"
     When I submit the form
     Then I should see the text "Unrecognized username or password"
     Then I should see the form "user-login-form"
@@ -27,22 +27,41 @@ Feature: Body
     When I fill out text fields with values
       | id             | value                 |
       | edit-name      | admin                 |
-      | edit-pass      |   |
+      | edit-pass      | admin                 |
     When I submit the form
     Then I should be on the user profile path
 
   @content @e2e-test
-  Scenario: Fill login form with correct credentials
+  Scenario: Can login as admin
     Given I am on the path "/user"
     Then I should see the form "user-login-form"
     When I fill out text fields with values
       | id             | value                 |
       | edit-name      | admin                 |
-      | edit-pass      |   |
+      | edit-pass      | admin                 |
     When I submit the form
     Then I should be on the user profile path
+    Then I preserve cookies
 
   @content @e2e-test
-  Scenario: Fill login form with correct credentials
-    Given I am on the path "/"
-    Then I should see the text "admin"
+  Scenario: Admin pages loads
+    Given I am on the path "/admin"
+    Then I should see the element "#toolbar-bar"
+    Then I click the "Content" link
+    Then I click the "Add content" link
+    Then I click the "About Office" link
+    Then I should see the form "node-about-office-form"
+    When I fill out text fields with values
+      | id                                   | value                          |
+      | edit-title-0-value                   | Integration test About Office  |
+      | edit-field-page-title-0-value        | -Nav                           |
+      | edit-field-short-description-0-value | Short desciption test          |
+    And I click the "Add media" button
+    Then I should see the element "input[name='files[upload]']"
+    When I fill in the "input[name='files[upload]']" field with file "jpg.jpg" of type "image/jpg"
+    Then I should see the text "Alternative text"
+    When I fill out the field labeled "Alternative text" with value "alt text example"
+    And I click the ".js-form-submit:contains('Save')" element
+    And I click the ".js-form-submit:contains('Insert selected')" element
+    Then I submit the form
+    Then I should be on the user profile path
