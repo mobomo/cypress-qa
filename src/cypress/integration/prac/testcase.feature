@@ -1,17 +1,48 @@
 Feature: Body
 
-  @front @report @e2e-test
-  Scenario Outline: Report, Fraud, Waste & Abuse
-    Given I am on the Report
-    When I scroll lt"<link_text>" into view
-    And I click the "<link_text>" link
-    #And I wait 3 seconds
-    Then I should see the text "<text_shown>"
+  @login @e2e-test
+  Scenario: Login form exists
+    Given I am on the path "/user"
+    Then I should see elements with below labels
+      | element  | label_text |
+      |    label |   Username |
+      |    label |   Password |
 
+  @login @e2e-test
+  Scenario: Fill login form with wrong password
+    Given I am on the path "/user"
+    Then I should see the form "user-login-form"
+    When I fill out text fields with values
+      | id         | value     |
+      | edit-name  | Username  |
+    When I fill out "edit-pass" field with value "Password"
+    When I submit the form
+    Then I should see the text "Unrecognized username or password"
+    Then I should see the form "user-login-form"
 
-    Examples:
-      | link_text                           | text_shown                                    |
-      | Definitions of Fraud, Waste & Abuse | the intentional or improper use               |
-      | Types of Complaints to Report       | Mismanagement or fraud relating to healthcare |
-      | Reporting Whistleblower Retaliation | Whistleblowers should never be subjected      |
-      | Reporting Whistleblower Retaliation | Whistleblowers should never be subjected      |
+  @login @e2e-test
+  Scenario: Fill login form with correct credentials
+    Given I am on the path "/user"
+    Then I should see the form "user-login-form"
+    When I fill out text fields with values
+      | id             | value                 |
+      | edit-name      | admin                 |
+      | edit-pass      |   |
+    When I submit the form
+    Then I should be on the user profile path
+
+  @content @e2e-test
+  Scenario: Fill login form with correct credentials
+    Given I am on the path "/user"
+    Then I should see the form "user-login-form"
+    When I fill out text fields with values
+      | id             | value                 |
+      | edit-name      | admin                 |
+      | edit-pass      |   |
+    When I submit the form
+    Then I should be on the user profile path
+
+  @content @e2e-test
+  Scenario: Fill login form with correct credentials
+    Given I am on the path "/"
+    Then I should see the text "admin"

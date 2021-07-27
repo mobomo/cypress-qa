@@ -1,11 +1,9 @@
-import executeCommand from '../common/execute-command';
-
-class Browser {
+class Drupal {
   // You can use Browser class to do some typical things, like
   // login, etc.
 
-  static visit(url) {
-    cy.visit(url);
+  static login(username, password) {
+
   }
 
   static clickLink(word) {
@@ -27,14 +25,6 @@ class Browser {
   static textIsVisible(word) {
     cy.contains(word).should('be.visible');
   }
-
-  static elementIsVisible(element) {
-    cy.get(element).should('be.visible');
-  }
-
-  static elementWithTextIsVisible(element, text) {
-    cy.get(element).contains(text).should('be.visible');
-  }
 }
 
-export default Browser;
+export default Drupal;
