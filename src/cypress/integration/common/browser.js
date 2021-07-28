@@ -41,13 +41,30 @@ Then(/^I should see the element "([^"].*)"$/, (element) => {
 });
 
 Then(/^I should see the element "([^"].*)" in iframe$/, (element) => {
-  let i = cy
-      .get('@iframe')
-      .its(`0.contentDocument.body`)
-      .should(`be.visible`)
-      .then(cy.wrap);
-  i.get(element)[0].type('test');
+  getIframeBody('@iframe').find('div').should('be.visible');
 });
+
+const getIframeDocument = (iframe) => {
+  return cy
+      .get(iframe)
+      // Cypress yields jQuery element, which has the real
+      // DOM element under property "0".
+      // From the real DOM iframe element we can get
+      // the "document" element, it is stored in "contentDocument" property
+      // Cypress "its" command can access deep properties using dot notation
+      // https://on.cypress.io/its
+      .its('0.contentDocument').should('exist')
+}
+
+const getIframeBody = (iframe) => {
+  // get the document
+  return getIframeDocument(iframe)
+      // automatically retries until body is loaded
+      .its('body').should('not.be.empty')
+      // wraps "body" DOM element to allow
+      // chaining more Cypress commands, like ".find(...)"
+      .then(cy.wrap)
+}
 
 Then(/^I should see an element "([^"].*)" with text "([^"].*)"$/, (element, text) => {
   Browser.elementWithTextIsVisible(element, text);

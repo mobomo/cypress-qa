@@ -27,6 +27,7 @@ local-debug:
 local-xpra:
 	docker run -it \
         -v "${shell pwd}/src:/app" \
+        -e DISPLAY=:0 \
         -p 10000:10000 \
         mobomo/cypress \
         xpra start \

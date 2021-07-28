@@ -14,7 +14,7 @@
   "dependencies": {
     "aws-sdk": "^2.951.0",
     "axios": "^0.21.0",
-    "cypress": "^7.7.0",
+    "cypress": "^8.0.0",
     "cypress-cucumber-preprocessor": "^4.1.4",
     "fs-extra": "^10.0.0",
     "glob": "^7.1.7"
