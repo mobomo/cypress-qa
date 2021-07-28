@@ -22,6 +22,18 @@ RUN apt-get install -y fonts-liberation xdg-utils
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome-stable_current_amd64.deb
 
+# Install Xpra
+RUN wget -q https://xpra.org/gpg.asc -O- | apt-key add -
+RUN wget https://xpra.org/repos/buster/xpra.list -O /etc/apt/sources.list.d/xpra.list
+RUN apt-get update
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get install -y xpra xpra-html5
+
+ENV DISPLAY=:0
+ENV XDG_CONFIG_HOME="/tmp"
+ENV XDG_RUNTIME_DIR="/tmp"
+
 # Install the app dependencies
 RUN mkdir /app
 COPY src/package.json /app/package.json
@@ -36,21 +48,6 @@ COPY src/cypress.json /app/cypress.json
 # clean up
 RUN rm -rf /tmp/*
 
-ENV XDG_CONFIG_HOME="/tmp"
-ENV XDG_RUNTIME_DIR="/tmp"
-
 WORKDIR /app
 
 CMD ["npm", "run", "test:debug"]
-
-FROM base as xpra
-
-# Install Xpra
-RUN wget -q https://xpra.org/gpg.asc -O- | apt-key add -
-RUN wget https://xpra.org/repos/buster/xpra.list -O /etc/apt/sources.list.d/xpra.list
-RUN apt-get update
-
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get install -y xpra xpra-html5
-
-ENV DISPLAY=:0

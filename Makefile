@@ -29,7 +29,16 @@ local-xpra:
         -v "${shell pwd}/src:/app" \
         -p 10000:10000 \
         mobomo/cypress \
-        xpra start --bind-tcp=0.0.0.0:10000 --start-child=xterm --html=on --daemon=no
+        xpra start \
+        --bind-tcp=0.0.0.0:10000 \
+        --start-child=xterm \
+        --html=on \
+        --daemon=no \
+        --modal-windows=true \
+        --video-encoders=nvenc \
+        --min-quality=100 \
+        --video-scaling=off \
+        --desktop-scaling=off
 
 local-example:
 	docker run -it \
