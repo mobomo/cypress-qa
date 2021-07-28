@@ -18,7 +18,7 @@ Feature: Body
     When I fill out the field element "#edit-pass" with value "Password"
     When I submit the form
     Then I should see the text "Unrecognized username or password"
-    Then I should see the form "user-login-form"
+    Then I should see the form "#user-login-form"
 
   @login @e2e-test
   Scenario: Fill login form with correct credentials
