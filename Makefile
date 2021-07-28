@@ -14,19 +14,19 @@ local-build:
 
 local-test:
 	docker run -it \
-        -v "${shell pwd}/src/cypress:/app/cypress" \
+        -v "${shell pwd}/src:/app" \
         mobomo/cypress
 
 local-debug:
 	docker run -it \
-        -v "${shell pwd}/src/cypress:/app/cypress" \
+        -v "${shell pwd}/src:/app" \
+        -e DISPLAY=host.docker.internal:0 \
         mobomo/cypress \
         npm run test:debug
 
 local-xpra:
 	docker run -it \
         -v "${shell pwd}/src:/app" \
-        -e DISPLAY=:0 \
         -p 10000:10000 \
         mobomo/cypress \
         xpra start --bind-tcp=0.0.0.0:10000 --start-child=xterm --html=on --daemon=no

@@ -37,6 +37,7 @@ COPY src/cypress.json /app/cypress.json
 RUN rm -rf /tmp/*
 
 ENV XDG_CONFIG_HOME="/tmp"
+ENV XDG_RUNTIME_DIR="/tmp"
 
 WORKDIR /app
 
@@ -52,5 +53,4 @@ RUN apt-get update
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get install -y xpra xpra-html5
 
-ENV DISPLAY=host.docker.internal:0
-ENV DEBUG="cypress:*"
+ENV DISPLAY=:0
