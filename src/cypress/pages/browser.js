@@ -78,8 +78,24 @@ class Browser {
             dataTransfer.items.add(testFile)
             el.files = dataTransfer.files
           });
+      cy.wrap(subject).trigger('change');
     })
-    cy.get(selector).trigger('change');
+  }
+  static uploadFileInIframe(fileName, fileType = '', selector, elementSelector) {
+    cy.get(selector).withinIframe(elementSelector, (el) => {
+      el.then(subject => {
+        cy.fixture(fileName, 'base64')
+            .then(Cypress.Blob.base64StringToBlob)
+            .then(blob => {
+              const el = subject[0]
+              const testFile = new File([blob], fileName, {type: fileType})
+              const dataTransfer = new DataTransfer()
+              dataTransfer.items.add(testFile)
+              el.files = dataTransfer.files
+            });
+        cy.wrap(subject).trigger('change');
+      })
+    });
   }
 }
 

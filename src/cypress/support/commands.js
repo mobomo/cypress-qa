@@ -23,3 +23,11 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+Cypress.Commands.add('withinIframe', { prevSubject: 'element' }, (element, selector, callback = () => {}) => {
+    return cy
+        .wrap(element)
+        .should(iframe => expect(iframe.contents().find(selector)).to.exist)
+        .then(iframe => {
+            callback(cy.wrap(iframe.contents().find(selector)))
+        });
+})

@@ -36,35 +36,21 @@ Then(/^I should see the text "([^"].*)"$/, (word) => {
   Browser.textIsVisible(word);
 });
 
+Then(/^I should see the text "([^"].*)" in iframe$/, (word) => {
+  cy.get('@iframe').withinIframe('body', (el) => {
+    el.contains(word).should('be.visible');
+  });
+});
+
 Then(/^I should see the element "([^"].*)"$/, (element) => {
   Browser.elementIsVisible(element);
 });
 
 Then(/^I should see the element "([^"].*)" in iframe$/, (element) => {
-  getIframeBody('@iframe').find('div').should('be.visible');
+  cy.get('@iframe').withinIframe('#edit-inline-entity-form-name-0-value', (el) => {
+    el.should('be.visible');
+  });
 });
-
-const getIframeDocument = (iframe) => {
-  return cy
-      .get(iframe)
-      // Cypress yields jQuery element, which has the real
-      // DOM element under property "0".
-      // From the real DOM iframe element we can get
-      // the "document" element, it is stored in "contentDocument" property
-      // Cypress "its" command can access deep properties using dot notation
-      // https://on.cypress.io/its
-      .its('0.contentDocument').should('exist')
-}
-
-const getIframeBody = (iframe) => {
-  // get the document
-  return getIframeDocument(iframe)
-      // automatically retries until body is loaded
-      .its('body').should('not.be.empty')
-      // wraps "body" DOM element to allow
-      // chaining more Cypress commands, like ".find(...)"
-      .then(cy.wrap)
-}
 
 Then(/^I should see an element "([^"].*)" with text "([^"].*)"$/, (element, text) => {
   Browser.elementWithTextIsVisible(element, text);
@@ -123,6 +109,10 @@ When(/^I submit the form$/, (id, value) => {
 
 Then(/^I fill in the "([^"].*)" field with file "([^"].*)" of type "([^"].*)"$/, (element, fixture, type) => {
   Browser.uploadFile(fixture, type, element)
+});
+
+Then(/^I fill in the "([^"].*)" field with file "([^"].*)" of type "([^"].*)" in iframe$/, (element, fixture, type) => {
+  Browser.uploadFileInIframe(fixture, type, '@iframe', element)
 });
 
 // cookies
