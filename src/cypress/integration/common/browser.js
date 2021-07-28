@@ -23,6 +23,12 @@ When(/^I click on "([^"].*)"$/, (word) => {
   Browser.click(word);
 });
 
+When(/^I click on "([^"].*)" in iframe$/, (word) => {
+  cy.get('@iframe').withinIframe('body', (el) => {
+    el.contains(word).click();
+  });
+});
+
 When(/^I scroll "([^"].*)" into view$/, (word) => {
   Browser.scrollTo(word);
 });
@@ -85,12 +91,19 @@ When(/^I fill out the field element "([^"].*)" with value "([^"].*)"$/, (element
 });
 
 When(/^I fill out the field labeled "([^"].*)" with value "([^"].*)"$/, (label, value) => {
-
-  cy.log(label);
-  console.log(label);
   cy.get('label').contains(label).then( (el) => {
     cy.get('#' + el.attr('for')).type(value);
   })
+});
+
+When(/^I fill out the field labeled "([^"].*)" with value "([^"].*)" in iframe$/, (label, value) => {
+  cy.get('@iframe').withinIframe('body', (el) => {
+    el.contains(label).then((element) => {
+      cy.get('@iframe').withinIframe('#' + element.attr('for'), (el) => {
+        el.type(value);
+      });
+    })
+  });
 });
 
 When(/^I submit the form$/, (id, value) => {

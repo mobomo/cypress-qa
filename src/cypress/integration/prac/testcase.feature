@@ -52,12 +52,12 @@ Feature: Body
     Then I click the "Bio" link
     Then I should see the form "#node-bio-form"
     When I fill out text fields with values
-      | id                                   | value                          |
-      | edit-title-0-value                   | Integration test bio           |
-      | edit-field-page-title-0-value        | -Nav                           |
-      | edit-field-short-description-0-value | Short desciption test          |
-      | edit-field-job-title-0-value         | My job title                   |
-      | edit-field-division-0-target-id      | My division                    |
+      | id                                   | value                                                |
+      | edit-title-0-value                   | Integration test bio                                 |
+      | edit-field-page-title-0-value        | -Nav                                                 |
+      | edit-field-short-description-0-value | Short desciption test                                |
+      | edit-field-job-title-0-value         | My job title                                         |
+      | edit-field-division-0-target-id      | Climatic Science and Services Division (CSSD) (911)  |
     And I click the "summary[aria-controls='edit-field-contact-image']" element
     And I click the "Select media" button
     Given I should see the iframe "#entity_browser_iframe_media_entity_browser_modal"
@@ -68,9 +68,9 @@ Feature: Body
     When I fill out the field labeled "Alternative text" with value "alt text example" in iframe
     And I fill out the field labeled "Name" with value "picture name" in iframe
     And I fill out the field labeled "Credit" with value "picture credit" in iframe
-    And I click the ".is-entity-browser-submit:contains('Save image')" element in iframe
+    And I click on "Save image" in iframe
     Then I should see the element "input.remove-button"
-    Then I click the "#node-about-office-form #edit-actions #edit-submit" element
+    Then I click the "#node-bio-form #edit-actions #edit-submit" element
 
 #  @content @e2e-test
 #  Scenario: Admin pages loads
