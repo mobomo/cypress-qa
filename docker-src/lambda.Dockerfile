@@ -10,7 +10,7 @@ ENV XDG_CONFIG_HOME="/tmp"
 ENV NODE_PATH="/var/lang/lib/node_modules/"
 
 # Speed up builds by not having to redownload cypress
-RUN npm install --unsafe-perm=true --allow-root -g cypress@7.7.0
+RUN npm install --unsafe-perm=true --allow-root -g cypress@8.0.0
 RUN npm install --unsafe-perm=true --allow-root -g aws-sdk
 
 # Patch Cypress binary to not use /dev/shm
