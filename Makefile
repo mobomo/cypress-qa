@@ -25,7 +25,8 @@ local-debug:
         npm run test:debug
 
 local-xpra:
-	docker run -it \
+	docker run -it --rm \
+        --name=cypress_xpra \
         -v "${shell pwd}/src:/app" \
         -e DISPLAY=:0 \
         -p 10000:10000 \

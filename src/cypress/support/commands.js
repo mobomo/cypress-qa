@@ -30,4 +30,14 @@ Cypress.Commands.add('withinIframe', { prevSubject: 'element' }, (element, selec
         .then(iframe => {
             callback(cy.wrap(iframe.contents().find(selector)))
         });
-})
+});
+
+Cypress.Commands.add('getIframeBody', (frame) => {
+  return cy
+  .get('iframe[id="' + frame + '"]')
+    .its('0.contentDocument.body').should('exist').should('not.be.empty')
+  // wraps "body" DOM element to allow
+  // chaining more Cypress commands, like ".find(...)"
+  // https://on.cypress.io/wrap
+  .then(cy.wrap)
+});
