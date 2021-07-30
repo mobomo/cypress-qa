@@ -7,7 +7,14 @@ import { When } from 'cypress-cucumber-preprocessor/steps';
 
 /**
  * Scroll Into View by CSS Selector
- * @description This step definition will scroll the viewport window until the provided selector is visible on the page.
+ * @description
+ * This step definition will scroll the viewport window
+ * until the provided selector is visible on the page.
+ *
+ * @summary
+ * - When I scroll to `selector`
+ * - When I scroll the `selector` element into view
+ * - When I scroll to the `selector` element
  *
  * It should be noted that a built-in step definition with a
  * similar syntax exists to scroll into view by providing a
@@ -19,14 +26,17 @@ import { When } from 'cypress-cucumber-preprocessor/steps';
  * @param {string} selector The CSS selector on which to operate
  *
  * @example
- * // Scrolls the #main-content element into view
+ * // Scrolls the `#main-content` element into view
  * When I scroll to "#main-content"
+ *
  * @example
- * // Scrolls the #main-footer element into view
- * When I scroll to the "#main-footer" into view
+ * // Scrolls the `#main-footer` element into view
+ * When I scroll the "#main-footer" element into view
+ *
  * @example
- * // Scrolls the #main-header element into view
+ * // Scrolls the `#main-header` element into view
  * When I scroll to the "#main-header" element
+ *
  * @returns {Promise<*>} - Result
  */
 const scrollSelectorIntoView = (selector) => {
@@ -44,6 +54,10 @@ When(/^I scroll(?:\sto)?(?:\sthe)? "([^"].*)"(?:\selement\sinto\sview)?/, (selec
  * This step definition will scroll the given element until the
  * element's bottom or top is visible on the page.
  *
+ * @summary
+ * - When I scroll to `(top|bottom)` of `selector`
+ * - When I scroll the `(top|bottom)` of `selector` into view
+ *
  * This step definition passes `ensureScrollable: false` as an
  * option to the `.scrollTo()` function. It is possible that passing
  * this step an element that cannot be scrolled will result in a
@@ -58,18 +72,23 @@ When(/^I scroll(?:\sto)?(?:\sthe)? "([^"].*)"(?:\selement\sinto\sview)?/, (selec
  * @example
  * // Scrolls to the top of `.scrollable-selector`
  * When I scroll to the top of ".scrollable-selector"
+ *
  * @example
  * // Scrolls to the bottom of `.scrollable-selector`
  * When I scroll to the bottom of ".scrollable-selector"
+ *
  * @example
  * // Scrolls to the top of `.scrollable-selector`
  * When I scroll the top of ".scrollable-selector" into view
+ *
  * @example
  * // Scrolls to the bottom of `.scrollable-selector`
  * When I scroll the bottom of ".scrollable-selector" into view
+ *
+ * @returns {Promise<*>} - Result
  */
 const scrollToSelectorTopOrBottom = (position, selector) => {
-  cy.get(selector).scrollTo('bottom', {ensureScrollable: false});
+  cy.get(selector).scrollTo(position, {ensureScrollable: false});
 }
 
 

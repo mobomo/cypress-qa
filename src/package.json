@@ -4,20 +4,24 @@
   "description": "An example for Cypress and Cucumber usage",
   "main": "index.js",
   "scripts": {
+    "docs": "jsdoc --configure .jsdoc.json --verbose",
     "cypress:open": "cypress open",
     "test": "cypress run --env TAGS='@e2e-test' --spec 'cypress/integration/**/*.feature'",
     "test:debug": "cypress run --headed --env TAGS='@e2e-test' --spec 'cypress/integration/**/*.feature' --no-exit",
-    "test:tag": "cypress run --headed --env TAGS='@content' --spec 'cypress/integration/**/*.feature' --no-exit"
+    "test:tag": "cypress run --headed --env TAGS='@content' --spec 'cypress/integration/**/*.feature' --no-exit",
+    "test:steps": "cypress run --headed --env TAGS='@steps' --spec 'cypress/integration/**/*.feature' --no-exit"
   },
   "author": "",
   "license": "Private",
   "dependencies": {
     "aws-sdk": "^2.951.0",
     "axios": "^0.21.0",
+    "braintree-jsdoc-template": "^3.3.0",
     "cypress": "^8.0.0",
     "cypress-cucumber-preprocessor": "^4.1.4",
     "fs-extra": "^10.0.0",
-    "glob": "^7.1.7"
+    "glob": "^7.1.7",
+    "jsdoc": "^3.6.7"
   },
   "devDependencies": {
     "eslint": "^7.30.0",
