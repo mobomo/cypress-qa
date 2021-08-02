@@ -1,6 +1,6 @@
 import { Given, When } from 'cypress-cucumber-preprocessor/steps';
-import Homepage from '../../pages/prac/homepage';
-import Report from '../../pages/prac/report';
+import Homepage from '../../pages/custom/homepage';
+import Report from '../../pages/custom/report';
 import Browser from '../../pages/browser';
 
 Given(/^I am on the path "([^"].*)"$/, (url) => {

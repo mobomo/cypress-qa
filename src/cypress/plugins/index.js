@@ -7,7 +7,6 @@
 // You can read more here:
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
-const { cypressConfigResolver } = require('../config/cypress-config-resolver');
 const pluginExecuteCommand = require('./plugin-execute-command');
 const cucumber = require('cypress-cucumber-preprocessor').default;
 const isLambda = process.env.AWS_SAM_LOCAL || !!process.env.LAMBDA_TASK_ROOT;

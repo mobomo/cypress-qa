@@ -74,7 +74,7 @@ exports.handler = async (event, context) => {
 
         if (isLocal) {
             if (fileExists('/video')) {
-                runCommand("cp -R /tmp/tests/cypress/videos/prac/*.mp4 /video/");
+                runCommand("cp -R /tmp/tests/cypress/videos/custom/*.mp4 /video/");
             }
         }
         else {
@@ -82,7 +82,7 @@ exports.handler = async (event, context) => {
             var s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
             var uploadParams = {Bucket: process.env.RESULTS_BUCKET, Key: '', Body: ''};
-            var file = '/tmp/tests/cypress/videos/prac/testcase.feature.mp4';
+            var file = '/tmp/tests/cypress/videos/custom/testcase.feature.mp4';
 
             // Configure the file stream and obtain the upload parameters
             var fs = require('fs');

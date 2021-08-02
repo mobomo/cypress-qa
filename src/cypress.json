@@ -6,5 +6,6 @@
     "mochaFile": "test-results/test-output-[hash].xml"
   },
   "chromeWebSecurity": false,
-  "record": false
+  "record": false,
+  "defaultCommandTimeout": 10000
 }
