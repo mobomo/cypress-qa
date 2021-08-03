@@ -3,7 +3,22 @@ Feature: Common
   @steps
   Scenario: The major scrolling steps are used
     Given I am on "/user/login"
+    Then I should not see the form "#user-register-form"
     Then I should see the form "#user-login-form"
+    Then I should see an element "label" with text "Username"
+    Then I should see the element "label" with text "Username"
+    Then I should see element "label" with text "Username"
+    Then I should see an element "label" with "Username"
+    Then I should see the element "label" with "Username"
+    Then I should see element "label" with "Username"
+    Then I should see elements with below text
+      | selector  | text     |
+      | label     | Username |
+      | label     | Password |
+    Then I should not see elements with below text
+      | selector  | text     |
+      | label     | fasdfdsf |
+      | label     | asdfasfd |
     When I fill out text fields with values
       | id             | value                 |
       | edit-name      | admin                 |
@@ -13,8 +28,8 @@ Feature: Common
     And I go to the bottom of the page
     And I scroll to the top of the page
     And I scroll to the bottom of the page
-    And I scroll to "#main-content"
-    And I scroll the "#main-content" element into view
+    And I scroll to ".main-content"
+    And I scroll the ".main-content" element into view
     And I scroll to the "#main-content" element
     And I scroll "Member for" into view
     And I scroll to the bottom of ".region-header"
@@ -24,3 +39,9 @@ Feature: Common
     And I go to "/user/"
     And I navigate to "/user/1"
     Then I should see the text "Member"
+    Then I should see text "Member"
+    Then I should see "Member"
+    Then I should not see the text "asadfasdfsadf"
+    Then I should not see text "asadfasdfsadf"
+    Then I should not see "asadfasdfsadf"
+    Given I should see the iframe "#entity_browser_iframe_media_entity_browser_modal"

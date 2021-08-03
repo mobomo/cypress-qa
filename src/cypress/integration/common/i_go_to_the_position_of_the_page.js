@@ -4,6 +4,7 @@
  * This file manages typical window scrolling patterns as step definitions.
  */
 import { When } from 'cypress-cucumber-preprocessor/steps';
+
 /**
  * Scroll Into View by CSS Selector
  * @description
@@ -24,7 +25,7 @@ import { When } from 'cypress-cucumber-preprocessor/steps';
  * When I go to the top of the page
  *
  * @example
- * // Scrolls to the bottom of the page
+ * // Scrolls to the bottom of the page.
  * When I go to the bottom of the page
  * When I scroll to the bottom of the page
  *

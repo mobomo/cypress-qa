@@ -41,5 +41,10 @@ When(`I navigate/go to {string}`, (route) => {
 });
 
 Given(`I am on/at {string}`, (route) => {
-  navigateToURLorPath(route);
+  if (route === 'the homepage') {
+    navigateToURLorPath('/');
+  }
+  else {
+    navigateToURLorPath(route);
+  }
 });

@@ -1,3 +1,8 @@
+/**
+ * @module misc
+ * @file
+ * This file manages typical drupal-specific patterns as step definitions.
+ */
 import { Given, When, And } from 'cypress-cucumber-preprocessor/steps';
 import Drupal from '../../pages/drupal';
 

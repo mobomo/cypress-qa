@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  form(action="register", method="post")
+    label(for="user") Username
+    input#user(type="text", name="user")
+    br
+    label(for="pass") Password
+    input#pass(type="text", name="pass")
+    br
+    input(type="submit", value="Submit")

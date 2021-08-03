@@ -4,9 +4,9 @@ Feature: Body
   Scenario: Login form exists
     Given I am on the path "/user"
     Then I should see elements with below labels
-      | element  | label_text |
-      |    label |   Username |
-      |    label |   Password |
+      | selector  | text     |
+      | label     | Username |
+      | label     | Password |
 
   @login @e2e-test
   Scenario: Fill login form with wrong password
