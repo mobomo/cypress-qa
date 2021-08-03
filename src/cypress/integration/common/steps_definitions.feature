@@ -28,6 +28,7 @@ Feature: Common
     And I go to the bottom of the page
     And I scroll to the top of the page
     And I scroll to the bottom of the page
+    And I scroll "Member for" into view
     And I scroll to ".main-content"
     And I scroll the ".main-content" element into view
     And I scroll to the "#main-content" element
@@ -44,4 +45,3 @@ Feature: Common
     Then I should not see the text "asadfasdfsadf"
     Then I should not see text "asadfasdfsadf"
     Then I should not see "asadfasdfsadf"
-    Given I should see the iframe "#entity_browser_iframe_media_entity_browser_modal"

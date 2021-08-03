@@ -39,3 +39,23 @@ Cypress.Commands.add('getIframeBody', (frame) => {
     .its('0.contentDocument.body').should('exist').should('not.be.empty')
   .then(cy.wrap)
 });
+
+// Need to combine get() and contains() so we can match both selectors and text.
+Cypress.Commands.add('getOrContains', ( selector) => {
+
+    // I don't know why all the duplication is necessary, but it seems like it is.
+    /** @todo cleanup */
+    let list = cy.get(`${selector}, :contains('${selector}')`);
+    list.eq(0, { log: false }).then(el => {
+        // The first element will be html if we are matching against content (text)
+        if (el.prop('tagName') === 'HTML') {
+            // So instead, get the innermost element (last)
+            list = cy.get(`${selector}, :contains('${selector}')`, { log: false }).last({ log: false });
+        }
+        else {
+            // The first element will be our element if we are matching against a selector
+            list = cy.wrap(el, { log: false });
+        }
+    });
+    return list;
+});

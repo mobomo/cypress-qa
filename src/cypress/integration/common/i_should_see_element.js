@@ -19,6 +19,7 @@ import Browser from "../../pages/browser";
  * @since 1.0.0
  *
  * @param {string} selector The CSS selector of the `form` html element on which to operate
+ * @param {boolean} visible [true] Should text be visible or invisible
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
  *
@@ -133,7 +134,7 @@ const shouldSeeTextIframe = (text, iframe='@iframe', visible = true) => {
     }
 };
 
-Then(/^I should (|not )see (?:|text |the text )"([^"].*)" in iframe$/, (text) => {
+Then(/^I should (|not )see (?:|text |the text )"([^"].*)" in iframe$/, (visible, text) => {
     shouldSeeTextIframe(text, '@iframe', visible.length === 0);
 });
 
@@ -192,6 +193,7 @@ Then(/^I should (|not )see (?:|an |the ) element "([^"].*)"$/, (visible, selecto
  *
  * @param {string} selector The CSS selector on which to operate
  * @param {string} iframe [@iframe] The CSS selector of the iframe on which to operate
+ * @param {boolean} visible [true] Boolean denoting whether to check for visibility or presence
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
  *
@@ -229,13 +231,14 @@ Then(/^I should (|not )see the element "([^"].*)" in iframe$/, (visible, selecto
  * This step definition will verify that an element has text
  *
  * @summary
- * - Then I should see (an|the) element `.element-selector` with [text] "text"
+ * - Then I should see (an|the) element ".element-selector" with [text] "text"
  *
  * @version 1.0.0
  * @since 1.0.0
  *
  * @param {string} selector The CSS selector on which to operate
  * @param {string} text The text to match
+ * @param {boolean} visible [true] Boolean denoting whether to check for visibility or presence
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
  *
@@ -301,42 +304,41 @@ Then(/^I should (|not )see elements with below text$/, (visible, dataTable) => {
  * This step definition will verify that an element in an iframe has text
  *
  * @summary
- * - Then I should see an element `.element-selector` with text "text" in iframe
+ * - Then I should see [the] iframe `.element-selector`
  *
  * @version 1.0.0
  * @since 1.0.0
  *
  * @param {string} selector The CSS selector on which to operate
  * @param {string} text The text to match
+ * @param {boolean} visible [true] Boolean denoting whether to check for visibility or presence
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
  *
  * @example
  * // Passes if the an `.element-selector` contains the text `text`
- * Then I should see an element `.element-selector` with text "text" in iframe
+ * Then I should see the iframe ".element-selector"
+ * Then I should see iframe ".element-selector"
  *
  * @example
  * // Passes if the an `.element-selector` does not contain the text `text`
- * Then I should not see an element `.element-selector` with text "text" in iframe
+ * Then I should not see the iframe ".element-selector"
+ * Then I should not see iframe ".element-selector"
  *
- * @example
- * // Passes if there are elements matching the passed datatable element selector and text
- * I should see elements with below labels
- *   | selector  | text      |
- *   | label     | Username  |
- *   | label     | Password  |
- *
- * @example
- * // Passes if there are not elements matching the passed datatable element selector and text or they are not visible
- * I should see not elements with below labels
- *   | selector  | text      |
- *   | label     | Username  |
- *   | label     | Password  |
  *
  * @returns {Promise<*>} - Result
  */
-Then(/^I should (|not )see the iframe "([^"].*)"$/, (element) => {
-    cy.get('iframe').get(element).as('iframe').should('be.visible');
+const shouldSeeIframe = (selector, visible = true) => {
+    if (visible) {
+        cy.get('iframe').get(selector).as('iframe').should('be.visible');
+    }
+    else {
+        cy.get('iframe').get(selector).as('iframe').should('not.be.visible');
+    }
+}
+
+Then(/^I should (|not )see (?:|the )iframe "([^"].*)"$/, (visible, selector) => {
+    shouldSeeIframe(selector, visible.length === 0);
 });
 
 // Form handling

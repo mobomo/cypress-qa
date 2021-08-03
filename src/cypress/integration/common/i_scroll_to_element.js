@@ -40,7 +40,7 @@ import { When } from 'cypress-cucumber-preprocessor/steps';
  * @returns {Promise<*>} - Result
  */
 const scrollSelectorIntoView = (selector) => {
-  cy.get(selector).scrollIntoView();
+  cy.getOrContains(selector).should('be.visible').scrollIntoView();
 }
 
 When(/^I scroll(?:\sto)?(?:\sthe)? "([^"].*)"(?:\selement\sinto\sview)?/, (selector) => {
@@ -66,7 +66,7 @@ When(/^I scroll(?:\sto)?(?:\sthe)? "([^"].*)"(?:\selement\sinto\sview)?/, (selec
  * @version 1.0.0
  * @since 1.0.0
  *
- * @param {string} position One of: `top`, `bottom`
+ * @param {PositionType} positionType One of: `topLeft` | `top` | `topRight` | `left` | `center` | `right` | `bottomLeft` | `bottom` | `bottomRight`
  * @param {string} selector The CSS selector on which to operate
  *
  * @example
@@ -87,11 +87,11 @@ When(/^I scroll(?:\sto)?(?:\sthe)? "([^"].*)"(?:\selement\sinto\sview)?/, (selec
  *
  * @returns {Promise<*>} - Result
  */
-const scrollToSelectorTopOrBottom = (position, selector) => {
-  cy.get(selector).scrollTo(position, {ensureScrollable: false});
+const scrollToSelectorTopOrBottom = (positionType, selector) => {
+  cy.getOrContains(selector).should('exist').scrollTo(positionType, {ensureScrollable: false});
 }
 
 
-When(/^I scroll(?:\sthe)?(?:\sto)?(?:\sthe) (top|bottom) of "([^"].*)"(?:\sinto)?(?:\sview)?/, (position, selector) => {
+When(/^I scroll(?:\sthe)?(?:\sto)?(?:\sthe) (topLeft|top|topRight|left|center|right|bottomLeft|bottom|bottomRight) of "([^"].*)"(?:\sinto)?(?:\sview)?/, (position, selector) => {
   scrollToSelectorTopOrBottom(position, selector);
 });
