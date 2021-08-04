@@ -18,7 +18,7 @@ ENV CYPRESS_CACHE_FOLDER=/usr/lib/.cypress
 ENV NODE_PATH=/var/lang/lib/node_modules/
 
 ## Speed up builds by not having to redownload cypress
-RUN npm install --unsafe-perm=true --allow-root -g cypress@8.0.0
+RUN npm install --unsafe-perm=true --allow-root -g cypress@8.1.0
 #RUN npm install --unsafe-perm=true --allow-root -g aws-sdk
 
 ## https://github.com/cypress-io/cypress/issues/4333
@@ -46,9 +46,11 @@ WORKDIR /app
 
 CMD ["npm", "run", "test:debug"]
 
-FROM base as browsers
+RUN echo "set bell-style none" >> /etc/inputrc
 
-# Install browsers
-RUN apt-get install -y fonts-liberation xdg-utils
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome-stable_current_amd64.deb
+#FROM base as browsers
+#
+## Install browsers
+#RUN apt-get install -y fonts-liberation xdg-utils
+#RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+#RUN dpkg -i google-chrome-stable_current_amd64.deb

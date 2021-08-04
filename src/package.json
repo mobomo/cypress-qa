@@ -7,9 +7,10 @@
     "docs": "jsdoc --configure .jsdoc.json --verbose",
     "cypress:open": "cypress open",
     "test": "cypress run --env TAGS='@e2e-test' --spec 'cypress/integration/**/*.feature'",
-    "test:debug": "cypress run --headed --env TAGS='@e2e-test' --spec 'cypress/integration/**/*.feature' --no-exit",
-    "test:tag": "cypress run --headed --env TAGS='@content' --spec 'cypress/integration/**/*.feature' --no-exit",
-    "test:steps": "cypress run --headed --env TAGS='@steps' --spec 'cypress/integration/**/*.feature' --no-exit"
+    "test:debug": "cypress open --env TAGS='@e2e-test'",
+    "test:headed": "cypress run --headed --env TAGS='@e2e-test' --spec 'cypress/integration/**/*.feature'",
+    "ci:test": "cypress run --env TAGS='@steps' --spec 'cypress/integration/**/*.feature'",
+    "ci:debug": "cypress open --env TAGS='@steps'"
   },
   "author": "",
   "license": "Private",
@@ -18,7 +19,7 @@
     "axios": "^0.21.0",
     "braintree-jsdoc-template": "^3.3.0",
     "cypress": "^8.0.0",
-    "cypress-cucumber-preprocessor": "^4.1.4",
+    "cypress-cucumber-preprocessor": "^4.2.0",
     "express": "^4.17.1",
     "fs-extra": "^10.0.0",
     "glob": "^7.1.7",
