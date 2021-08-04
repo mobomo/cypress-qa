@@ -1,5 +1,3 @@
-import executeCommand from '../common/execute-command';
-
 class Browser {
   // You can use Browser class to do some typical things, like
   // login, etc.
@@ -29,7 +27,7 @@ class Browser {
   }
 
   static wait(seconds) {
-    executeCommand(seconds);
+    cy.wait(seconds*1000);
   }
 
   static textIsVisible(word) {

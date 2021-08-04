@@ -61,7 +61,6 @@ Feature: Body
     And I click the "summary[aria-controls='edit-field-contact-image']" element
     And I click the "Select media" button
     Given I should see the iframe "#entity_browser_iframe_media_entity_browser_modal"
-    Then I wait 3 seconds
     Then I should see the element "#edit-inline-entity-form-field-media-image-0-upload" in iframe
     When I fill in the "#edit-inline-entity-form-field-media-image-0-upload" field with file "jpg.jpg" of type "image/jpg" in iframe
     Then I should see the text "Alternative text" in iframe
@@ -70,7 +69,10 @@ Feature: Body
     And I fill out the field labeled "Credit" with value "picture credit" in iframe
     And I click on "Save image" in iframe
     Then I should see the element "input.remove-button"
-    Then I click the "#node-bio-form #edit-actions #edit-submit" element
+    When I click the "#node-bio-form #edit-actions #edit-submit" element
+    And I click the "Delete" link
+    And I click the "Delete" button
+    Then I should be on the user profile path
 
 #  @content @e2e-test
 #  Scenario: Admin pages loads
