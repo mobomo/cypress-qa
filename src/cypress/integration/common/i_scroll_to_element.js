@@ -43,7 +43,7 @@ const scrollSelectorIntoView = (selector) => {
   cy.getOrContains(selector).should('be.visible').scrollIntoView();
 }
 
-When(/^I scroll(?:\sto)?(?:\sthe)? "([^"].*)"(?:\selement\sinto\sview)?/, (selector) => {
+When(/^I scroll(?:\sto)?(?:\sthe)? "([^"]*)"(?:\selement\sinto\sview)?/, (selector) => {
   scrollSelectorIntoView(selector);
 });
 
@@ -92,6 +92,6 @@ const scrollToSelectorTopOrBottom = (positionType, selector) => {
 }
 
 
-When(/^I scroll(?:\sthe)?(?:\sto)?(?:\sthe) (topLeft|top|topRight|left|center|right|bottomLeft|bottom|bottomRight) of "([^"].*)"(?:\sinto)?(?:\sview)?/, (position, selector) => {
+When(/^I scroll(?:\sthe)?(?:\sto)?(?:\sthe) (topLeft|top|topRight|left|center|right|bottomLeft|bottom|bottomRight) of "([^"]*)"(?:\sinto)?(?:\sview)?/, (position, selector) => {
   scrollToSelectorTopOrBottom(position, selector);
 });

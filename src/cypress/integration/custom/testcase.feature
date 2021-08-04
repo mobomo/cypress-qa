@@ -2,15 +2,15 @@ Feature: Body
 
   @login @e2e-test
   Scenario: Login form exists
-    Given I am on the path "/user"
-    Then I should see elements with below labels
+    Given I am on "/user"
+    Then I should see elements with below text
       | selector  | text     |
       | label     | Username |
       | label     | Password |
 
   @login @e2e-test
   Scenario: Fill login form with wrong password
-    Given I am on the path "/user"
+    Given I am on "/user"
     Then I should see the form "#user-login-form"
     When I fill out text fields with values
       | id         | value     |
@@ -22,7 +22,7 @@ Feature: Body
 
   @login @e2e-test
   Scenario: Fill login form with correct credentials
-    Given I am on the path "/user"
+    Given I am on "/user"
     Then I should see the form "#user-login-form"
     When I fill out text fields with values
       | id             | value                 |
@@ -33,7 +33,7 @@ Feature: Body
 
   @content @e2e-test
   Scenario: Can login as admin
-    Given I am on the path "/user"
+    Given I am on "/user"
     Then I should see the form "#user-login-form"
     When I fill out text fields with values
       | id             | value                 |
@@ -45,19 +45,19 @@ Feature: Body
 
   @content @e2e-test
   Scenario: Admin pages loads
-    Given I am on the path "/admin"
+    Given I am on "/admin"
     Then I should see the element "#toolbar-bar"
     Then I click the "Content" link
     Then I click the "Add content" link
     Then I click the "Bio" link
     Then I should see the form "#node-bio-form"
     When I fill out text fields with values
-      | id                                   | value                                                |
-      | edit-title-0-value                   | Integration test bio                                 |
-      | edit-field-page-title-0-value        | -Nav                                                 |
-      | edit-field-short-description-0-value | Short desciption test                                |
-      | edit-field-job-title-0-value         | My job title                                         |
-      | edit-field-division-0-target-id      | Climatic Science and Services Division (CSSD) (911)  |
+      | selector                              | text                                                |
+      | #edit-title-0-value                   | Integration test bio                                 |
+      | #edit-field-page-title-0-value        | -Nav                                                 |
+      | #edit-field-short-description-0-value | Short desciption test                                |
+      | #edit-field-job-title-0-value         | My job title                                         |
+      | #edit-field-division-0-target-id      | Climatic Science and Services Division (CSSD) (911)  |
     And I click the "summary[aria-controls='edit-field-contact-image']" element
     And I click the "Select media" button
     Given I should see the iframe "#entity_browser_iframe_media_entity_browser_modal"

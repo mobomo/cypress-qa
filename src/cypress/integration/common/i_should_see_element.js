@@ -38,7 +38,7 @@ const shouldSeeForm = (selector, visible = true) => {
     }
 }
 
-Then(/^I should (|not )see the form "([^"].*)"$/, (visible, element) => {
+Then(/^I should (|not )see the form "([^"]*)"$/, (visible, element) => {
     shouldSeeForm(element, visible.length === 0);
 });
 
@@ -84,8 +84,7 @@ const shouldTextVisible = (text, visible = true) => {
     }
 };
 
-Then(/^I should (|not )see (?:|text |the text )"([^"].*)"$/, (visible, text) => {
-
+Then(/^I should (|not )see (?:|text |the text )"([^"]*)"$/, (visible, text) => {
     shouldTextVisible(text, visible.length === 0)
 });
 
@@ -134,7 +133,7 @@ const shouldSeeTextIframe = (text, iframe='@iframe', visible = true) => {
     }
 };
 
-Then(/^I should (|not )see (?:|text |the text )"([^"].*)" in iframe$/, (visible, text) => {
+Then(/^I should (|not )see (?:|text |the text )"([^"]*)" in iframe$/, (visible, text) => {
     shouldSeeTextIframe(text, '@iframe', visible.length === 0);
 });
 
@@ -169,13 +168,13 @@ Then(/^I should (|not )see (?:|text |the text )"([^"].*)" in iframe$/, (visible,
  */
 const shouldSeeElement = (selector, visible = true) => {
     if (visible) {
-        cy.get(element).should('be.usable');
+        cy.get(selector).should('be.usable');
     }
     else {
-        cy.get(element).should('not.be.usable');
+        cy.get(selector).should('not.be.usable');
     }
 }
-Then(/^I should (|not )see (?:|an |the ) element "([^"].*)"$/, (visible, selector) => {
+Then(/^I should (|not )see (?:|an |the )element "([^"]*)"$/, (visible, selector) => {
     shouldSeeElement(selector, visible.length === 0);
 });
 
@@ -220,7 +219,7 @@ const shouldSeeElementIframe = (selector, iframe = '@iframe', visible = true) =>
     }
 };
 
-Then(/^I should (|not )see the element "([^"].*)" in iframe$/, (visible, selector) => {
+Then(/^I should (|not )see the element "([^"]*)" in iframe$/, (visible, selector) => {
     shouldSeeElementIframe(selector, '@iframe', visible.length === 0)
 });
 
@@ -287,7 +286,7 @@ const shouldSeeElementText = (selector, text, visible = true) => {
     }
 };
 
-Then(/^I should (|not )see (?:|an |the )element "([^"].*)" with (?:|text )"([^"].*)"$/, (visible, selector, text) => {
+Then(/^I should (|not )see (?:|an |the )element "([^"]*)" with (?:|text )"([^"]*)"$/, (visible, selector, text) => {
     shouldSeeElementText(selector, text, visible.length === 0 );
 });
 
@@ -337,7 +336,7 @@ const shouldSeeIframe = (selector, visible = true) => {
     }
 }
 
-Then(/^I should (|not )see (?:|the )iframe "([^"].*)"$/, (visible, selector) => {
+Then(/^I should (|not )see (?:|the )iframe "([^"]*)"$/, (visible, selector) => {
     shouldSeeIframe(selector, visible.length === 0);
 });
 

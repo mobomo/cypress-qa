@@ -25,19 +25,11 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 Cypress.Commands.add('withinIframe', { prevSubject: 'element' }, (element, selector, callback = () => {}) => {
   return cy
-    .wrap(element)
+    .wrap(element, { log: false })
     .should(iframe => expect(iframe.contents().find(selector)).to.exist)
     .then(iframe => {
-      callback(cy.wrap(iframe.contents().find(selector)))
+      callback(cy.wrap(iframe.contents().find(selector)), { log: false })
     });
-});
-
-// Wrap the frame to allow chaining Cypress commands like .find().
-Cypress.Commands.add('getIframeBody', (frame) => {
-  return cy
-  .get('iframe[id="' + frame + '"]')
-    .its('0.contentDocument.body').should('exist').should('not.be.empty')
-  .then(cy.wrap)
 });
 
 // Need to combine get() and contains() so we can match both selectors and text.

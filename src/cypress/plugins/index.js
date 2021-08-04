@@ -64,11 +64,12 @@ module.exports = (on, config) => {
     }
     else {
       if (browser.name === 'electron') {
-        launchOptions.preferences.fullscreen = false;
-        launchOptions.preferences.fullscreenable = false;
-        launchOptions.preferences.maximizable = false;
-        launchOptions.preferences.width = 1920;
-        launchOptions.preferences.height = 1080;
+        // launchOptions.preferences.fullscreen = true;
+        // launchOptions.preferences.fullscreenable = false;
+        //launchOptions.preferences.maximizable = true;
+        launchOptions.preferences.maximized = true;
+        // launchOptions.preferences.width = 1920;
+        // launchOptions.preferences.height = 1080;
       }
     }
 
