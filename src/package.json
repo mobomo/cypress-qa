@@ -8,6 +8,7 @@
     "cypress:open": "cypress open",
     "test": "cypress run --env TAGS='@e2e-test' --spec 'cypress/integration/**/*.feature'",
     "test:debug": "cypress open --env TAGS='@e2e-test'",
+    "test:content": "cypress open --env TAGS='@content'",
     "test:headed": "cypress run --headed --env TAGS='@e2e-test' --spec 'cypress/integration/**/*.feature'",
     "ci:test": "cypress run --env TAGS='@steps' --spec 'cypress/integration/**/*.feature'",
     "ci:debug": "cypress open --env TAGS='@steps'"

@@ -5,6 +5,8 @@
  */
 import { When } from 'cypress-cucumber-preprocessor/steps';
 
+/** FILE UPLOADS ***/
+
 /**
  * Fill File Field Upload
  *
@@ -66,17 +68,21 @@ const changeFileField = (subject, fileName, fileType) => {
 const uploadFile = (fileName, fileType = '', selector) => {
     cy.get('input[type="file"]').get(selector).then(subject => {
         changeFileField(subject, fileName, fileType)
-    })
+    });
 }
 
-When(/^I fill in (?:|the) "([^"]*)"(?:| field) with file "([^"]*)" of type "([^"]*)"$/, (element, fixture, type) => {
-    uploadFile(fixture, type, element)
+When(/^I fill (?:|out |in )(?:|the) "([^"]*)"(?:| field) with file "([^"]*)" of type "([^"]*)"$/, (element, fixture, type) => {
+    uploadFile(fixture, type, element);
 });
 
-When(/^I fill in (?:|the )field labeled "([^"]*)" with file "([^"]*)" of type "([^"]*)"$/, (label, fixture, type) => {
+const uploadFileByLabel = (label, fileName, fileType) => {
     cy.get('label').contains(label).then( (el) => {
-        uploadFile( fixture, type, '#' + el.attr('for'))
-    })
+        uploadFile(fileName, fileType, '#' + el.attr('for'))
+    });
+}
+
+When(/^I fill (?:|out |in )(?:|the )field labeled "([^"]*)" with file "([^"]*)" of type "([^"]*)"$/, (label, fixture, type) => {
+    uploadFileByLabel(label, fixture, type);
 });
 
 /**
@@ -112,7 +118,7 @@ const uploadFileInIframe = (fileName, fileType = '', selector='@iframe', element
     });
 }
 
-When(/^I fill in the "([^"]*)" field with file "([^"]*)" of type "([^"]*)" in iframe$/, (selector, fixture, type) => {
+When(/^I fill (?:|out |in )(?:|the )"([^"]*)"(?:| field) with file "([^"]*)" of type "([^"]*)" in iframe$/, (selector, fixture, type) => {
     uploadFileInIframe(fixture, type, '@iframe', selector)
 });
 
@@ -152,9 +158,11 @@ const uploadFileInIframeByLabel = (fileName, fileType, label) => {
     });
 }
 
-When(/^I fill in (?:|the )field labeled "([^"]*)" with file "([^"]*)" of type "([^"]*)" in iframe$/, (label, fixture, type) => {
+When(/^I fill (?:|out |in )(?:|the )field labeled "([^"]*)" with file "([^"]*)" of type "([^"]*)" in iframe$/, (label, fixture, type) => {
     uploadFileInIframeByLabel(fixture, type, label)
 });
+
+/** TYPING ***/
 
 /**
  * Type into element
@@ -191,7 +199,7 @@ When(/^I type (?:|the )(?:|text )"([^"]*)" into (?:|the )(?:|element |field )"([
     typeInField(selector, text)
 });
 
-When(/^I fill (?:out )(?:the )(?:field |element )"([^"]*)"(?: field| element) with (?:|text )"([^"]*)"$/, (selector, text) => {
+When(/^I fill (?:out )(?:the )"([^"]*)"(?: field| element) with (?:|text )"([^"]*)"$/, (selector, text) => {
     typeInField(selector, text)
 });
 
@@ -227,8 +235,20 @@ When(/^I type (?:|the )(?:|text )"([^"]*)" into (?:|the )(?:|element |field )lab
     typeInLabeledField(label, text);
 });
 
-When(/^I fill out the field labeled "([^"]*)" with text "([^"]*)"$/, (label, text) => {
+When(/^I fill (?:|out )(?:|the )field labeled "([^"]*)" with (?:|text )"([^"]*)"$/, (label, text) => {
     typeInLabeledField(label, text);
+});
+
+const typeInCKEditor = (label, text) => {
+    cy.get('label').contains(label).then( (el) => {
+        cy.get('#cke_' + el.attr('for') + ' iframe').withinIframe('body', (el) => {
+            el.type(text);
+        })
+    })
+};
+
+When(/^I fill (?:|out )(?:|the )ckeditor labeled "([^"]*)" with (?:|text )"([^"]*)"$/, (label, text) => {
+    typeInCKEditor(label, text);
 });
 
 const typeInFields = (dataTable) => {
@@ -240,9 +260,7 @@ const typeInFields = (dataTable) => {
     }
     else if (type === 'label'){
         dataTable.hashes().forEach((row) => {
-            cy.get('label').contains(row.label).then((el) => {
-                typeInField('#' + el.attr('for'), row.text);
-            });
+            typeInLabeledField(row.label, row.text)
         });
     }
     else {
@@ -283,3 +301,55 @@ When(/^I fill out the field labeled "([^"]*)" with (?:|value |text )"([^"]*)" in
     typeInLabeledFieldIframe(label, text);
 });
 
+/** CHECKBOXES ***/
+const checkField = (selector, check = true) => {
+    if (check) {
+        cy.get(selector).check();
+    }
+    else {
+        cy.get(selector).uncheck();
+    }
+}
+
+When(/^I (|un)check (?:|the )box "([^"]*)"$/, (check, label, text) => {
+    checkLabeledField(label, check.length === 0);
+});
+
+const checkLabeledField = (label, check = true) => {
+    cy.get('label').contains(label).then( (el) => {
+        checkField('#' + el.attr('for'), check);
+    })
+};
+
+When(/^I (|un)check (?:|the )box labeled "([^"]*)"$/, (check, label, text) => {
+    checkLabeledField(label, check.length === 0);
+});
+
+When(/^I (|un)check (?:|the )"([^"]*)"(?:| box)$/, (check, label, text) => {
+    checkLabeledField(label, check.length === 0);
+});
+
+When(/^I (|un)check (?:|the )"([^"]*)" element$/, (check, label, text) => {
+    checkField(label, check.length === 0);
+});
+
+const checkFieldDataTable = (dataTable, check) => {
+    let type = dataTable.rawTable[0][0];
+    if (type === 'selector') {
+        dataTable.hashes().forEach((row) => {
+            checkField(row.selector, check);
+        });
+    }
+    else if (type === 'label'){
+        dataTable.hashes().forEach((row) => {
+            checkLabeledField(row.label, check);
+        });
+    }
+    else {
+        throw new Error("datatable header does not match");
+    }
+}
+
+When(/^I (|un)check the boxes$/, (check, dataTable) => {
+    checkFieldDataTable(dataTable, check.length === 0);
+});

@@ -74,17 +74,17 @@ Then(/^I should (|not )see the form "([^"]*)"$/, (visible, element) => {
  * @returns {Promise<*>} - Result
  */
 
-const shouldTextVisible = (text, visible = true) => {
+const shouldSeeText = (text, visible = true) => {
     if (visible) {
-        cy.contains(text).should('be.usable');
+        cy.contains(text).should('be.visible');
     }
     else {
-        cy.contains(text).should('not.be.usable');
+        cy.contains(text).should('not.be.visible');
     }
 };
 
 Then(/^I should (|not )see (?:|text |the text )"([^"]*)"$/, (visible, text) => {
-    shouldTextVisible(text, visible.length === 0)
+    shouldSeeText(text, visible.length === 0)
 });
 
 /**

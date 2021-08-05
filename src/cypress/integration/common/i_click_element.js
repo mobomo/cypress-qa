@@ -65,7 +65,7 @@ const clickLinkIframe = (text) => {
     });
 }
 
-When(/^I click (?:|on )the "([^"]*)" link$/, (text) => {
+When(/^I click (?:|on )the "([^"]*)" link in iframe$/, (text) => {
     clickLinkIframe(text);
 });
 
@@ -75,7 +75,7 @@ const clickButtonIframe = (text) => {
     });
 }
 
-When(/^I click (?:|on )the "([^"]*)" button$/, (text) => {
+When(/^I click (?:|on )the "([^"]*)" button in iframe$/, (text) => {
     clickButtonIframe(text);
 });
 
@@ -85,7 +85,7 @@ const clickElementIframe = (selector) => {
     });
 }
 
-When(/^I click (?:|on )the "([^"]*)" element$/, (selector) => {
+When(/^I click (?:|on )the "([^"]*)" element in iframe$/, (selector) => {
     clickElementIframe(selector)
 })
 
@@ -95,8 +95,8 @@ const clickTextIframe = (text) => {
     });
 }
 
-When(/^I click (?:|on )"([^"]*)"$/, (something) => {
-    clickTextIframe(something)
+When(/^I click (?:|on )"([^"]*)" in iframe$/, (something) => {
+    clickElementOrTextInIframe(something)
 });
 
 const clickElementOrTextInIframe = (something) => {
