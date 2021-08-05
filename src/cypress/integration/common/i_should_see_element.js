@@ -13,7 +13,7 @@ import Browser from "../../pages/browser";
  * This step definition will verify that a form is visible, triggering a failure if not
  *
  * @summary
- * - Then I should see the form `.form-selector`
+ * - Then I should see the form `selector`
  *
  * @version 1.0.0
  * @since 1.0.0
@@ -49,7 +49,7 @@ Then(/^I should (|not )see the form "([^"]*)"$/, (visible, element) => {
  * This step definition will verify that some text is visible, triggering a failure if not
  *
  * @summary
- * - Then I should (|not) see (|text |the text) `text`
+ * - Then I should see `text`
  *
  * @version 1.0.0
  * @since 1.0.0
@@ -75,7 +75,6 @@ Then(/^I should (|not )see the form "([^"]*)"$/, (visible, element) => {
  */
 
 const shouldTextVisible = (text, visible = true) => {
-
     if (visible) {
         cy.contains(text).should('be.usable');
     }
@@ -95,7 +94,7 @@ Then(/^I should (|not )see (?:|text |the text )"([^"]*)"$/, (visible, text) => {
  * This step definition will verify that some text inside of an iframe is visible, triggering a failure if not
  *
  * @summary
- * - Then I should (|not) see (|text |the text) `text` in iframe
+ * - Then I should (|not) see (|text |the text) `text` in `iframe`
  *
  * @version 1.0.0
  * @since 1.0.0
@@ -121,16 +120,10 @@ Then(/^I should (|not )see (?:|text |the text )"([^"]*)"$/, (visible, text) => {
  * @returns {Promise<*>} - Result
  */
 const shouldSeeTextIframe = (text, iframe='@iframe', visible = true) => {
-    if (visible) {
-        cy.get(iframe).withinIframe('body', (el) => {
-            el.contains(text).should('be.usable');
-        });
-    }
-    else {
-        cy.get(iframe).withinIframe('body', (el) => {
-            el.contains(text).should('not.be.usable');
-        });
-    }
+    cy.get(iframe).withinIframe(`:contains('${text}'):visible:last`, (el) => {
+        // Already checks visibility
+        // el.should('be.visible');
+    });
 };
 
 Then(/^I should (|not )see (?:|text |the text )"([^"]*)" in iframe$/, (visible, text) => {
@@ -239,8 +232,6 @@ Then(/^I should (|not )see the element "([^"]*)" in iframe$/, (visible, selector
  * @param {string} text The text to match
  * @param {boolean} visible [true] Boolean denoting whether to check for visibility or presence
  *
- * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
- *
  * @example
  * // Passes if the an `.element-selector` contains the text `text`
  * Then I should see an element ".element-selector" with text "text"
@@ -259,24 +250,8 @@ Then(/^I should (|not )see the element "([^"]*)" in iframe$/, (visible, selector
  * Then I should not see the element ".element-selector" with "text"
  * Then I should not see element ".element-selector" with "text"
  *
- *
- * @example
- * // Passes if there are elements matching the passed datatable element selector and text
- * I should see elements with below text
- *   | selector  | text      |
- *   | label     | Username  |
- *   | label     | Password  |
- *
- * @example
- * // Passes if there are not elements matching the passed datatable element selector and text or they are not visible
- * I should see not elements with below text
- *   | selector  | text      |
- *   | label     | Username  |
- *   | label     | Password  |
- *
  * @returns {Promise<*>} - Result
  */
-
 const shouldSeeElementText = (selector, text, visible = true) => {
     if (visible) {
         cy.get(selector).contains(text).should('be.usable');
@@ -290,10 +265,47 @@ Then(/^I should (|not )see (?:|an |the )element "([^"]*)" with (?:|text )"([^"]*
     shouldSeeElementText(selector, text, visible.length === 0 );
 });
 
-Then(/^I should (|not )see elements with below text$/, (visible, dataTable) => {
+/**
+* Verify Element Has Text
+*
+* @description
+* This step definition will take in a DataTable and verify that an element has text
+*
+* @summary
+* - Then I should see (an|the) element ".element-selector" with [text] "text"
+*   | selector  | text      |
+*   | ...     | ...  |
+*
+* @version 1.0.0
+* @since 1.0.0
+*
+* @param {DataTable} dataTable The Cucumber DataTable given by Gherkin keyed with columns 'selector' and 'text'
+* @param {boolean} visible [true] Boolean denoting whether to check for visibility or presence
+*
+* @example
+* // Passes if there are elements matching the passed datatable element selector and text
+* I should see elements with below text
+*   | selector  | text      |
+*   | label     | Username  |
+*   | label     | Password  |
+*
+* @example
+* // Passes if there are not elements matching the passed datatable element selector and text or they are not visible
+* I should see not elements with below text
+*   | selector  | text      |
+*   | label     | Username  |
+*   | label     | Password  |
+*
+* @returns {Promise<*>} - Result
+*/
+const shouldSeeElementTextInTable = (dataTable, visible = true) => {
     dataTable.hashes().forEach((row) => {
-        shouldSeeElementText(row.selector, row.text, visible.length === 0);
+        shouldSeeElementText(row.selector, row.text, visible);
     });
+}
+
+Then(/^I should (|not )see elements with below text$/, (visible, dataTable) => {
+    shouldSeeElementTextInTable(dataTable, visible.length === 0)
 });
 
 /**

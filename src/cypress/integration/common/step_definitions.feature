@@ -15,7 +15,7 @@ Feature: Common
     And I click "Contact Image"
     And I click the "Select media" button
     Given I should see the iframe "#entity_browser_iframe_media_entity_browser_modal"
-    Then I should see the text "Image" in iframe
+    Then I should see "Image" in iframe
     When I fill in the field labeled "Image" with file "jpg.jpg" of type "image/jpg" in iframe
     Then I should see the text "Alternative text" in iframe
     When I fill out the field labeled "Alternative text" with value "alt text example" in iframe
@@ -23,7 +23,6 @@ Feature: Common
     And I fill out the field labeled "Credit" with value "picture credit" in iframe
     And I click "Remove" in iframe
     And I click "Save image" in iframe
-    And I wait 200 seconds
 
   @steps
   Scenario: Filling fields
@@ -40,7 +39,6 @@ Feature: Common
     When I fill in the field labeled "Picture" with file "jpg.jpg" of type "image/jpg"
     Then I should see "Remove"
     And I click "Remove"
-    And I wait 200 seconds
 
   @steps
   Scenario: The major visibility steps are used

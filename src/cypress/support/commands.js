@@ -28,26 +28,35 @@ Cypress.Commands.add('withinIframe', { prevSubject: 'element' }, (element, selec
     .wrap(element, { log: false })
     .should(iframe => expect(iframe.contents().find(selector)).to.exist)
     .then(iframe => {
-      callback(cy.wrap(iframe.contents().find(selector)), { log: false })
+      callback(cy.wrap(iframe.contents().find(selector), { log: false }))
     });
+});
+
+Cypress.Commands.add('getIframeBody', { prevSubject: 'element' }, (element, selector, callback = () => {}) => {
+    return cy
+        .wrap(element, { log: false })
+        .should(iframe => expect(iframe.contents().find('body')).to.exist)
+        .then(iframe => {
+            cy.wrap(iframe.contents().find('body'))
+        });
 });
 
 // Need to combine get() and contains() so we can match both selectors and text.
 Cypress.Commands.add('getOrContains', ( selector) => {
-
-    // I don't know why all the duplication is necessary, but it seems like it is.
-    /** @todo cleanup */
-    let list = cy.get(`${selector}, :contains('${selector}')`);
-    list.eq(0, { log: false }).then(el => {
-        // The first element will be html if we are matching against content (text)
-        if (el.prop('tagName') === 'HTML') {
-            // So instead, get the innermost element (last)
-            list = cy.get(`${selector}, :contains('${selector}')`, { log: false }).last({ log: false });
+    cy.get('body', { log: false }).then((body) => {
+        let results = body.find(selector);
+        if (results.length > 0) {
+            cy.wrap(results);
         }
         else {
-            // The first element will be our element if we are matching against a selector
-            list = cy.wrap(el, { log: false });
+            results = body.find(`:contains('${selector}'):visible:last`);
+            if (results.length > 0) {
+                cy.wrap(results);
+            }
+            else {
+                // Fall back to the standard contains()
+                cy.contains(selector);
+            }
         }
     });
-    return list;
 });

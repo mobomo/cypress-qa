@@ -88,9 +88,8 @@ When(/^I scroll(?:\sto)?(?:\sthe)? "([^"]*)"(?:\selement\sinto\sview)?/, (select
  * @returns {Promise<*>} - Result
  */
 const scrollToSelectorTopOrBottom = (positionType, selector) => {
-  cy.getOrContains(selector).should('exist').scrollTo(positionType, {ensureScrollable: false});
+  cy.get(selector).should('exist').scrollTo(positionType, {ensureScrollable: false});
 }
-
 
 When(/^I scroll(?:\sthe)?(?:\sto)?(?:\sthe) (topLeft|top|topRight|left|center|right|bottomLeft|bottom|bottomRight) of "([^"]*)"(?:\sinto)?(?:\sview)?/, (position, selector) => {
   scrollToSelectorTopOrBottom(position, selector);
