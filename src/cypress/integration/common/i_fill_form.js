@@ -66,7 +66,7 @@ const changeFileField = (subject, fileName, fileType) => {
  * @returns {Promise<*>} - Result
  */
 const uploadFile = (fileName, fileType = '', selector) => {
-    cy.get('input[type="file"]').get(selector).then(subject => {
+    cy.getWithAlias('input[type="file"]').get(selector).then(subject => {
         changeFileField(subject, fileName, fileType)
     });
 }
@@ -76,7 +76,7 @@ When(/^I fill (?:|out |in )(?:|the) "([^"]*)"(?:| field) with file "([^"]*)" of 
 });
 
 const uploadFileByLabel = (label, fileName, fileType) => {
-    cy.get('label').contains(label).then( (el) => {
+    cy.getWithAlias('label').contains(label).then( (el) => {
         uploadFile(fileName, fileType, '#' + el.attr('for'))
     });
 }
@@ -111,7 +111,7 @@ When(/^I fill (?:|out |in )(?:|the )field labeled "([^"]*)" with file "([^"]*)" 
  * @returns {Promise<*>} - Result
  */
 const uploadFileInIframe = (fileName, fileType = '', selector='@iframe', elementSelector) => {
-    cy.get(selector).withinIframe(elementSelector, (el) => {
+    cy.getWithAlias(selector).withinIframe(elementSelector, (el) => {
         el.then(subject => {
             changeFileField(subject, fileName, fileType)
         })
@@ -147,9 +147,9 @@ When(/^I fill (?:|out |in )(?:|the )"([^"]*)"(?:| field) with file "([^"]*)" of 
  * @returns {Promise<*>} - Result
  */
 const uploadFileInIframeByLabel = (fileName, fileType, label) => {
-    cy.get('@iframe').withinIframe(`label:contains('${label}')`, (el) => {
+    cy.getWithAlias('@iframe').withinIframe(`label:contains('${label}')`, (el) => {
         el.then(subject => {
-            cy.get('@iframe').withinIframe('#' + subject.attr('for'), (el) => {
+            cy.getWithAlias('@iframe').withinIframe('#' + subject.attr('for'), (el) => {
                 el.then(subject => {
                     changeFileField(subject, fileName, fileType);
                 })
@@ -192,7 +192,7 @@ When(/^I fill (?:|out |in )(?:|the )field labeled "([^"]*)" with file "([^"]*)" 
  * @returns {Promise<*>} - Result
  */
 const typeInField = (selector, text) => {
-    cy.get(selector).type(text);
+    cy.getWithAlias(selector).type(text);
 }
 
 When(/^I type (?:|the )(?:|text )"([^"]*)" into (?:|the )(?:|element |field )"([^"]*)"(?:| field| element)$/, (text, selector) => {
@@ -226,7 +226,7 @@ When(/^I fill (?:out )(?:the )"([^"]*)"(?: field| element) with (?:|text )"([^"]
  * @returns {Promise<*>} - Result
  */
 const typeInLabeledField = (label, text) => {
-    cy.get('label').contains(label).then( (el) => {
+    cy.getWithAlias('label').contains(label).then( (el) => {
         typeInField('#' + el.attr('for'), text);
     })
 };
@@ -240,8 +240,8 @@ When(/^I fill (?:|out )(?:|the )field labeled "([^"]*)" with (?:|text )"([^"]*)"
 });
 
 const typeInCKEditor = (label, text) => {
-    cy.get('label').contains(label).then( (el) => {
-        cy.get('#cke_' + el.attr('for') + ' iframe').withinIframe('body', (el) => {
+    cy.getWithAlias('label').contains(label).then( (el) => {
+        cy.getWithAlias('#cke_' + el.attr('for') + ' iframe').withinIframe('body', (el) => {
             el.type(text);
         })
     })
@@ -284,9 +284,9 @@ When(/^I submit the form$/, (id, value) => {
 });
 
 const typeInLabeledFieldIframe = (label, value) => {
-    cy.get('@iframe').withinIframe('body', (el) => {
+    cy.getWithAlias('@iframe').withinIframe('body', (el) => {
         el.contains(label).then((element) => {
-            cy.get('@iframe').withinIframe('#' + element.attr('for'), (el) => {
+            cy.getWithAlias('@iframe').withinIframe('#' + element.attr('for'), (el) => {
                 el.type(value);
             });
         })
@@ -304,10 +304,10 @@ When(/^I fill out the field labeled "([^"]*)" with (?:|value |text )"([^"]*)" in
 /** CHECKBOXES ***/
 const checkField = (selector, check = true) => {
     if (check) {
-        cy.get(selector).check();
+        cy.getWithAlias(selector).check();
     }
     else {
-        cy.get(selector).uncheck();
+        cy.getWithAlias(selector).uncheck();
     }
 }
 
@@ -316,7 +316,7 @@ When(/^I (|un)check (?:|the )box "([^"]*)"$/, (check, label, text) => {
 });
 
 const checkLabeledField = (label, check = true) => {
-    cy.get('label').contains(label).then( (el) => {
+    cy.getWithAlias('label').contains(label).then( (el) => {
         checkField('#' + el.attr('for'), check);
     })
 };
@@ -352,4 +352,43 @@ const checkFieldDataTable = (dataTable, check) => {
 
 When(/^I (|un)check the boxes$/, (check, dataTable) => {
     checkFieldDataTable(dataTable, check.length === 0);
+});
+
+const selectField = (selector, selection) => {
+    cy.getWithAlias(selector).select(selection);
+}
+
+When(/^I select "([^"]*)" in "([^"]*)"$/, (selection, selector) => {
+    selectField(selector, selection);
+});
+
+const selectLabeledField = (label, selection) => {
+    cy.getWithAlias('label').contains(label).then( (el) => {
+        selectField('#' + el.attr('for'), selection);
+    })
+};
+
+When(/^I select "([^"]*)" in field labeled "([^"]*)"$/, (selection, label) => {
+    selectLabeledField(label, selection);
+});
+
+const selectDataTable = (dataTable, check) => {
+    let type = dataTable.rawTable[0][0];
+    if (type === 'selector') {
+        dataTable.hashes().forEach((row) => {
+            selectField(row.selector, row.selection);
+        });
+    }
+    else if (type === 'label'){
+        dataTable.hashes().forEach((row) => {
+            selectLabeledField(row.label, row.selection);
+        });
+    }
+    else {
+        throw new Error("datatable header does not match");
+    }
+}
+
+When(/^I select$/, (dataTable) => {
+    selectDataTable(dataTable);
 });

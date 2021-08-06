@@ -60,3 +60,75 @@ Cypress.Commands.add('getOrContains', ( selector) => {
         }
     });
 });
+
+// Aliases
+// @see https://github.com/cypress-io/cypress/issues/8873
+Cypress.Commands.add('getWithAlias', ( selector, options) => {
+    let aliases = cy.state('aliases');
+    if (typeof aliases !== 'undefined' && typeof aliases['_context'] !== 'undefined') {
+        // Assume all aliases are contextual
+        let cx = '@_context';
+        if (typeof aliases[aliases['_context']] !== 'undefined') {
+            cx = '@' + aliases['_context'];
+        }
+
+        cy.get(cx).find(selector);
+    }
+    else {
+        cy.get(selector, options);
+    }
+});
+
+Cypress.Commands.add('containsWithAlias', ( text, options) => {
+    let aliases = cy.state('aliases');
+    if (typeof aliases !== 'undefined' && typeof aliases['_context'] !== 'undefined') {
+        // Assume all aliases are contextual
+        let cx = '@_context';
+        if (typeof aliases[aliases['_context']] !== 'undefined') {
+            cx = '@' + aliases['_context'];
+        }
+
+        cy.get(cx).contains(text);
+    }
+    else {
+        cy.contains(text, options);
+    }
+});
+
+// Cypress.Commands.overwrite('get', (originalFn, selector, options) => {
+//     let aliases = cy.state('aliases');
+//
+//     if (aliases !== undefined && aliases['_context'] !== undefined) {
+//         // Assume all aliases are contextual
+//         if (aliases[aliases['_context']] !== undefined) {
+//             return originalFn('@' + aliases['_context']).get(selector, options);
+//         }
+//         else {
+//             return originalFn('@_context').get(selector, options);
+//         }
+//     }
+//     else {
+//         return originalFn(selector, options);
+//     }
+// });
+
+Cypress.Commands.overwrite('as', (originalFn, obj, alias) => {
+    let aliases = cy.state('aliases');
+    if (aliases === undefined) {
+        aliases = {};
+    }
+    aliases[alias] = obj;
+
+    // Assume all aliases are contextual
+    aliases['_context'] = alias;
+
+    cy.state('aliases', aliases);
+
+    return originalFn(obj, alias);
+});
+
+Cypress.Commands.add('resetContext', () => {
+    let aliases = cy.state('aliases');
+    aliases['_context'] = undefined;
+    cy.state('aliases', aliases);
+});

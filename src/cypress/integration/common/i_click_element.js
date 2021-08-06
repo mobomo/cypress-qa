@@ -28,7 +28,7 @@ import {When} from "cypress-cucumber-preprocessor/steps";
  * @returns {Promise<*>} - Result
  */
 const clickLink = (text) => {
-    cy.get('a').should('be.visible').contains(text).click();
+    cy.getWithAlias('a').should('be.visible').contains(text).click();
 }
 
 When(/^I click (?:|on )the "([^"]*)" link$/, (text) => {
@@ -36,7 +36,7 @@ When(/^I click (?:|on )the "([^"]*)" link$/, (text) => {
 });
 
 const clickButton = (text) => {
-    cy.get('a, input[type="submit"], button').should('be.visible').contains(text).click();
+    cy.getWithAlias('a, input[type="submit"], button').should('be.visible').contains(text).click();
 }
 
 When(/^I click (?:|on )the "([^"]*)" button$/, (text) => {
@@ -44,7 +44,7 @@ When(/^I click (?:|on )the "([^"]*)" button$/, (text) => {
 });
 
 const clickElement = (selector) => {
-    cy.get(selector).should('be.visible').click();
+    cy.getWithAlias(selector).should('be.visible').click();
 }
 
 When(/^I click (?:|on )the "([^"]*)" element$/, (selector) => {
@@ -52,7 +52,7 @@ When(/^I click (?:|on )the "([^"]*)" element$/, (selector) => {
 })
 
 const clickText = (text) => {
-    cy.contains(text).should('be.visible').click();
+    cy.containsWithAlias(text).should('be.visible').click();
 }
 
 When(/^I click (?:|on )"([^"]*)"$/, (something) => {
@@ -60,7 +60,7 @@ When(/^I click (?:|on )"([^"]*)"$/, (something) => {
 });
 
 const clickLinkIframe = (text) => {
-    cy.get('@iframe').withinIframe('body', (el) => {
+    cy.getWithAlias('@iframe').withinIframe('body', (el) => {
         el.get('a').should('be.visible').contains(text).click();
     });
 }
@@ -70,7 +70,7 @@ When(/^I click (?:|on )the "([^"]*)" link in iframe$/, (text) => {
 });
 
 const clickButtonIframe = (text) => {
-    cy.get('@iframe').withinIframe('body', (el) => {
+    cy.getWithAlias('@iframe').withinIframe('body', (el) => {
         el.get('a, input[type="submit"], button').should('be.visible').contains(text).click();
     });
 }
@@ -80,8 +80,8 @@ When(/^I click (?:|on )the "([^"]*)" button in iframe$/, (text) => {
 });
 
 const clickElementIframe = (selector) => {
-    cy.get('@iframe').withinIframe('body', (el) => {
-        cy.get(selector).should('be.visible').click();
+    cy.getWithAlias('@iframe').withinIframe('body', (el) => {
+        cy.getWithAlias(selector).should('be.visible').click();
     });
 }
 
@@ -90,7 +90,7 @@ When(/^I click (?:|on )the "([^"]*)" element in iframe$/, (selector) => {
 })
 
 const clickTextIframe = (text) => {
-    cy.get('@iframe').withinIframe('body', (el) => {
+    cy.getWithAlias('@iframe').withinIframe('body', (el) => {
         el.contains(text).should('be.visible').click();
     });
 }
@@ -100,7 +100,7 @@ When(/^I click (?:|on )"([^"]*)" in iframe$/, (something) => {
 });
 
 const clickElementOrTextInIframe = (something) => {
-    cy.get('@iframe').withinIframe('body', (el) => {
+    cy.getWithAlias('@iframe').withinIframe('body', (el) => {
         el.contains(something).should('be.visible').click();
     });
 };

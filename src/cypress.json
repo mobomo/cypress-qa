@@ -7,5 +7,5 @@
   },
   "chromeWebSecurity": false,
   "defaultCommandTimeout": 10000,
-  "record": false
+  "record": true
 }

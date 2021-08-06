@@ -31,10 +31,10 @@ import Browser from "../../pages/browser";
  */
 const shouldSeeForm = (selector, visible = true) => {
     if (visible) {
-        cy.get('form').get(selector).as('form').should('be.usable');
+        cy.getWithAlias('form').get(selector).as('form').should('be.usable');
     }
     else {
-        cy.get('form').get(selector).as('form').should('not.be.usable');
+        cy.getWithAlias('form').get(selector).as('form').should('not.be.usable');
     }
 }
 
@@ -76,10 +76,10 @@ Then(/^I should (|not )see the form "([^"]*)"$/, (visible, element) => {
 
 const shouldSeeText = (text, visible = true) => {
     if (visible) {
-        cy.contains(text).should('be.visible');
+        cy.containsWithAlias(text).should('be.visible');
     }
     else {
-        cy.contains(text).should('not.be.visible');
+        cy.containsWithAlias(text).should('not.be.visible');
     }
 };
 
@@ -120,7 +120,7 @@ Then(/^I should (|not )see (?:|text |the text )"([^"]*)"$/, (visible, text) => {
  * @returns {Promise<*>} - Result
  */
 const shouldSeeTextIframe = (text, iframe='@iframe', visible = true) => {
-    cy.get(iframe).withinIframe(`:contains('${text}'):visible:last`, (el) => {
+    cy.getWithAlias(iframe).withinIframe(`:contains('${text}'):visible:last`, (el) => {
         // Already checks visibility
         // el.should('be.visible');
     });
@@ -161,10 +161,10 @@ Then(/^I should (|not )see (?:|text |the text )"([^"]*)" in iframe$/, (visible, 
  */
 const shouldSeeElement = (selector, visible = true) => {
     if (visible) {
-        cy.get(selector).should('be.usable');
+        cy.getWithAlias(selector).should('be.usable');
     }
     else {
-        cy.get(selector).should('not.be.usable');
+        cy.getWithAlias(selector).should('not.be.usable');
     }
 }
 Then(/^I should (|not )see (?:|an |the )element "([^"]*)"$/, (visible, selector) => {
@@ -201,12 +201,12 @@ Then(/^I should (|not )see (?:|an |the )element "([^"]*)"$/, (visible, selector)
  */
 const shouldSeeElementIframe = (selector, iframe = '@iframe', visible = true) => {
     if (visible) {
-        cy.get(iframe).withinIframe('#edit-inline-entity-form-name-0-value', (el) => {
+        cy.getWithAlias(iframe).withinIframe('#edit-inline-entity-form-name-0-value', (el) => {
             el.should('be.usable');
         });
     }
     else {
-        cy.get(iframe).withinIframe('#edit-inline-entity-form-name-0-value', (el) => {
+        cy.getWithAlias(iframe).withinIframe('#edit-inline-entity-form-name-0-value', (el) => {
             el.should('not.be.usable');
         });
     }
@@ -254,10 +254,10 @@ Then(/^I should (|not )see the element "([^"]*)" in iframe$/, (visible, selector
  */
 const shouldSeeElementText = (selector, text, visible = true) => {
     if (visible) {
-        cy.get(selector).contains(text).should('be.usable');
+        cy.getWithAlias(selector).contains(text).should('be.usable');
     }
     else {
-        cy.get(selector).contains(text).should('not.be.usable');
+        cy.getWithAlias(selector).contains(text).should('not.be.usable');
     }
 };
 
@@ -341,10 +341,10 @@ Then(/^I should (|not )see elements with below text$/, (visible, dataTable) => {
  */
 const shouldSeeIframe = (selector, visible = true) => {
     if (visible) {
-        cy.get('iframe').get(selector).as('iframe').should('be.visible');
+        cy.getWithAlias('iframe').get(selector).as('iframe').should('be.visible');
     }
     else {
-        cy.get('iframe').get(selector).as('iframe').should('not.be.visible');
+        cy.getWithAlias('iframe').get(selector).as('iframe').should('not.be.visible');
     }
 }
 
