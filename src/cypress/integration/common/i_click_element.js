@@ -52,6 +52,9 @@ When(/^I click (?:|on )the "([^"]*)" element$/, (selector) => {
 })
 
 const clickText = (text) => {
+    if (text === 'Save image') {
+        cy.containsWithAlias('Save image');
+    }
     cy.containsWithAlias(text).should('be.visible').click();
 }
 

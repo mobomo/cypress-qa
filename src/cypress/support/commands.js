@@ -32,7 +32,7 @@ Cypress.Commands.add('withinIframe', { prevSubject: 'element' }, (element, selec
     });
 });
 
-Cypress.Commands.add('getIframeBody', { prevSubject: 'element' }, (element, selector, callback = () => {}) => {
+Cypress.Commands.add('getIframe', { prevSubject: 'element' }, (element) => {
     return cy
         .wrap(element, { log: false })
         .should(iframe => expect(iframe.contents().find('body')).to.exist)
@@ -63,23 +63,36 @@ Cypress.Commands.add('getOrContains', ( selector) => {
 
 // Aliases
 // @see https://github.com/cypress-io/cypress/issues/8873
-Cypress.Commands.add('getWithAlias', ( selector, options) => {
+Cypress.Commands.add('getWithAlias', (selector, options) => {
     let aliases = cy.state('aliases');
-    if (typeof aliases !== 'undefined' && typeof aliases['_context'] !== 'undefined') {
+    if (selector[0] === '@') {
+        cy.get(selector, options)
+    }
+    else if (typeof aliases !== 'undefined' && typeof aliases['_context'] !== 'undefined') {
         // Assume all aliases are contextual
         let cx = '@_context';
         if (typeof aliases[aliases['_context']] !== 'undefined') {
             cx = '@' + aliases['_context'];
         }
 
-        cy.get(cx).find(selector);
+        if (aliases['_context'] === 'iframe') {
+            cy
+                .get('@iframe')
+                .should(iframe => expect(iframe.contents().find(selector)).to.exist)
+                .then(iframe => {
+                    cy.wrap(iframe.contents().find(selector))
+                });
+        }
+        else {
+            cy.get(cx).find(selector);
+        }
     }
     else {
         cy.get(selector, options);
     }
 });
 
-Cypress.Commands.add('containsWithAlias', ( text, options) => {
+Cypress.Commands.add('containsWithAlias', (text, options) => {
     let aliases = cy.state('aliases');
     if (typeof aliases !== 'undefined' && typeof aliases['_context'] !== 'undefined') {
         // Assume all aliases are contextual
@@ -88,7 +101,17 @@ Cypress.Commands.add('containsWithAlias', ( text, options) => {
             cx = '@' + aliases['_context'];
         }
 
-        cy.get(cx).contains(text);
+        if (aliases['_context'] === 'iframe') {
+            cy
+                .get('@iframe')
+                .should(iframe => expect(iframe.contents().find(`:not(script,style):contains('${text}'):visible:last, [value~='${text}']`)).to.exist)
+                .then(iframe => {
+                    cy.wrap(iframe.contents().find(`:not(script,style):contains('${text}'):visible:last, [value~='${text}']`))
+                });
+        }
+        else {
+            cy.get(cx).contains(text);
+        }
     }
     else {
         cy.contains(text, options);
@@ -114,7 +137,7 @@ Cypress.Commands.add('containsWithAlias', ( text, options) => {
 
 Cypress.Commands.overwrite('as', (originalFn, obj, alias) => {
     let aliases = cy.state('aliases');
-    if (aliases === undefined) {
+    if (typeof aliases === 'undefined') {
         aliases = {};
     }
     aliases[alias] = obj;

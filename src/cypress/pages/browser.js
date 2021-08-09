@@ -2,44 +2,22 @@ class Browser {
   // You can use Browser class to do some typical things, like
   // login, etc.
 
-  static visit(url) {
-    cy.visit(url);
+  static getAlias() {
+      let aliases = cy.state('aliases');
+      cy.log(aliases);
+      if (typeof aliases !== 'undefined' && typeof aliases[alias] !== 'undefined') {
+      return cy.wrap(aliases[alias]);
+    }
+    return undefined;
   }
 
-  static clickButton(word) {
-    cy.get('a, input[type="submit"], button').filter(':visible').contains(word).click();
+  static getAliases() {
+    return cy.state('aliases');
   }
 
-  static clickLink(word) {
-    cy.get('a').contains(word).click();
-  }
-
-  static clickElement(element) {
-    cy.get(element).click();
-  }
-
-  static click(word) {
-    cy.contains(word).click();
-  }
-
-  static scrollTo(word) {
-    cy.contains(word).scrollIntoView().should('be.visible');
-  }
-
-  static wait(seconds) {
-    cy.wait(seconds*1000);
-  }
-
-  static textIsVisible(word) {
-    cy.contains(word).should('be.visible');
-  }
-
-  static elementIsVisible(element) {
-    cy.get(element).should('be.visible');
-  }
-
-  static elementWithTextIsVisible(element, text) {
-    cy.get(element).contains(text).should('be.visible');
+  static aliasExists() {
+    let aliases = cy.state('aliases');
+    return typeof aliases[alias] !== 'undefined';
   }
 
   static preserveCookies() {
@@ -62,37 +40,6 @@ class Browser {
     cy.clearCookies();
     Cypress.Cookies.defaults({
       preserve: []
-    });
-  }
-
-  static uploadFile(fileName, fileType = '', selector) {
-    cy.get(selector).then(subject => {
-      cy.fixture(fileName, 'base64')
-          .then(Cypress.Blob.base64StringToBlob)
-          .then(blob => {
-            const el = subject[0]
-            const testFile = new File([blob], fileName, {type: fileType})
-            const dataTransfer = new DataTransfer()
-            dataTransfer.items.add(testFile)
-            el.files = dataTransfer.files
-          });
-      cy.wrap(subject).trigger('change');
-    })
-  }
-  static uploadFileInIframe(fileName, fileType = '', selector, elementSelector) {
-    cy.get(selector).withinIframe(elementSelector, (el) => {
-      el.then(subject => {
-        cy.fixture(fileName, 'base64')
-            .then(Cypress.Blob.base64StringToBlob)
-            .then(blob => {
-              const el = subject[0]
-              const testFile = new File([blob], fileName, {type: fileType})
-              const dataTransfer = new DataTransfer()
-              dataTransfer.items.add(testFile)
-              el.files = dataTransfer.files
-            });
-        cy.wrap(subject).trigger('change');
-      })
     });
   }
 }

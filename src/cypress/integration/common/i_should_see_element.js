@@ -5,6 +5,7 @@
  */
 
 import Browser from "../../pages/browser";
+import {When} from "cypress-cucumber-preprocessor/steps";
 
 /**
  * Verify form visibility
@@ -31,10 +32,10 @@ import Browser from "../../pages/browser";
  */
 const shouldSeeForm = (selector, visible = true) => {
     if (visible) {
-        cy.getWithAlias('form').get(selector).as('form').should('be.usable');
+        cy.get('form').get(selector).as('form').should('be.usable');
     }
     else {
-        cy.getWithAlias('form').get(selector).as('form').should('not.be.usable');
+        cy.get('form').get(selector).as('form').should('not.be.usable');
     }
 }
 
@@ -201,12 +202,12 @@ Then(/^I should (|not )see (?:|an |the )element "([^"]*)"$/, (visible, selector)
  */
 const shouldSeeElementIframe = (selector, iframe = '@iframe', visible = true) => {
     if (visible) {
-        cy.getWithAlias(iframe).withinIframe('#edit-inline-entity-form-name-0-value', (el) => {
+        cy.getWithAlias(iframe).withinIframe(selector, (el) => {
             el.should('be.usable');
         });
     }
     else {
-        cy.getWithAlias(iframe).withinIframe('#edit-inline-entity-form-name-0-value', (el) => {
+        cy.getWithAlias(iframe).withinIframe(selector, (el) => {
             el.should('not.be.usable');
         });
     }
@@ -263,6 +264,34 @@ const shouldSeeElementText = (selector, text, visible = true) => {
 
 Then(/^I should (|not )see (?:|an |the )element "([^"]*)" with (?:|text )"([^"]*)"$/, (visible, selector, text) => {
     shouldSeeElementText(selector, text, visible.length === 0 );
+});
+
+
+const shouldSeeButton = (text, visible) => {
+    if (visible) {
+        cy.getWithAlias('a, input[type="submit"], button').contains(text).should('be.visible');
+    }
+    else {
+        cy.getWithAlias('a, input[type="submit"], button').contains(text).should('not.be.visible');
+    }
+}
+
+When(/^I should (|not )see (?:|the )"([^"]*)" button$/, (visible, text) => {
+    shouldSeeButton(text, visible.length === 0);
+});
+
+
+const shouldSeeLink = (text, visible) => {
+    if (visible) {
+        cy.getWithAlias('a').contains(text).should('be.visible');
+    }
+    else {
+        cy.getWithAlias('a').contains(text).should('not.be.visible');
+    }
+}
+
+When(/^I should (|not )see (?:|the )"([^"]*)" link$/, (visible, text) => {
+    shouldSeeLink(text, visible.length === 0);
 });
 
 /**
@@ -341,10 +370,10 @@ Then(/^I should (|not )see elements with below text$/, (visible, dataTable) => {
  */
 const shouldSeeIframe = (selector, visible = true) => {
     if (visible) {
-        cy.getWithAlias('iframe').get(selector).as('iframe').should('be.visible');
+        cy.get('iframe').get(selector).as('iframe').should('be.visible');
     }
     else {
-        cy.getWithAlias('iframe').get(selector).as('iframe').should('not.be.visible');
+        cy.get('iframe').get(selector).as('iframe').should('not.be.visible');
     }
 }
 

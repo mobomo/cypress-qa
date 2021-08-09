@@ -1,6 +1,6 @@
 import {When} from "cypress-cucumber-preprocessor/steps";
 
-When(/^I reset context$/, (text, label) => {
+When(/^I (clear|reset) context$/, (text, label) => {
     cy.resetContext();
 });
 

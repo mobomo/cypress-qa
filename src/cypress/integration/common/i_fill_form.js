@@ -66,7 +66,7 @@ const changeFileField = (subject, fileName, fileType) => {
  * @returns {Promise<*>} - Result
  */
 const uploadFile = (fileName, fileType = '', selector) => {
-    cy.getWithAlias('input[type="file"]').get(selector).then(subject => {
+    cy.getWithAlias(selector).then(subject => {
         changeFileField(subject, fileName, fileType)
     });
 }
@@ -391,4 +391,47 @@ const selectDataTable = (dataTable, check) => {
 
 When(/^I select$/, (dataTable) => {
     selectDataTable(dataTable);
+});
+
+
+// YY-mm-dd
+// RFC3339 time hh:mm:ss
+const setDateField = (selector, date) => {
+    cy.getWithAlias(selector).then((el) => {
+        el.val(date);
+    });
+}
+
+When(/^I fill out field "([^"]*)" with date "([^"]*)"$/, (selector, date) => {
+    setDateField(selector, date);
+});
+
+const setDateLabeledField = (label, selection) => {
+    cy.getWithAlias('label').contains(label).then( (el) => {
+        setDateField('#' + el.attr('for'), selection);
+    })
+};
+
+When(/^I fill out labeled field "([^"]*)" with date "([^"]*)"$/, (date, label) => {
+    setDateLabeledField(label, date);
+});
+
+const setTimeField = (selector, date) => {
+    cy.getWithAlias(selector).then((el) => {
+        el.val(date);
+    });
+}
+
+When(/^I fill out field "([^"]*)" with time "([^"]*)"$/, (selector, time) => {
+    setTimeField(selector, time);
+});
+
+const setTimeLabeledField = (label, time) => {
+    cy.getWithAlias('label').contains(label).then( (el) => {
+        setDateField('#' + el.attr('for'), time);
+    })
+};
+
+When(/^I fill out labeled field "([^"]*)" with time "([^"]*)"$/, (label, time) => {
+    setTimeLabeledField(label, time);
 });
