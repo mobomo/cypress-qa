@@ -1,11 +1,11 @@
 .aws-sam
+.idea/
+.DS_Store
 samconfig.toml
 samconfig.toml.*
-src/cypress/videos
+cypress/videos
+cypress/screenshots
+docs
+test-results/
 node_modules/
 npm-debug.log
-.idea/
-src/cypress/screenshots
-test-results/
-.DS_Store
-

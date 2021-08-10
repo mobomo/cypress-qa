@@ -1,4 +1,4 @@
-.PHONY: build ecr-build ecr-login ecr-push test test2 test3 ssh deploy local-test local-build local-debug local-ssh
+.PHONY: build ecr-build ecr-login ecr-push test test2 test3 ssh deploy local-test local-build local-debug local-ssh xpra-build xpra-test
 
 build:
 	sam build
@@ -10,27 +10,35 @@ local-build:
 	docker build \
         --progress plain \
         -f ./docker-src/Dockerfile \
+        --target base \
         -t mobomo/cypress .
 
 local-test:
 	docker run -it \
-        -v "${shell pwd}/src:/app" \
+        -v "${shell pwd}:/app" \
         mobomo/cypress
 
 local-debug:
 	docker run -it \
-        -v "${shell pwd}/src:/app" \
+        -v "${shell pwd}:/app" \
         -e DISPLAY=host.docker.internal:0 \
         mobomo/cypress \
         npm run test:debug
 
-local-xpra:
+xpra-build:
+	docker build \
+        --progress plain \
+        -f ./docker-src/Dockerfile \
+        --target xpra \
+        -t mobomo/cypress-xpra .
+
+xpra-test:
 	docker run -it --rm \
-        --name=cypress_xpra \
-        -v "${shell pwd}/src:/app" \
+        --name=cypress-xpra \
+        -v "${shell pwd}:/app" \
         -e DISPLAY=:0 \
         -p 10000:10000 \
-        mobomo/cypress \
+        mobomo/cypress-xpra \
         xpra start \
         --bind-tcp=0.0.0.0:10000 \
         --start-child=xterm \
@@ -53,7 +61,7 @@ local-example:
 
 local-ssh:
 	docker run -it \
-        -v "${shell pwd}/src:/app" \
+        -v "${shell pwd}:/app" \
         --entrypoint "/bin/bash" \
         mobomo/cypress
 
@@ -84,7 +92,7 @@ ecr-push:
 
 lambda-test:
 	docker run -it \
-        -v "${shell pwd}/src:/app" \
+        -v "${shell pwd}:/app" \
         -v "${shell pwd}/video:/video" \
         --entrypoint "/var/lang/bin/node" \
         cypresslambdafunction:cypress-lambda \
@@ -100,7 +108,7 @@ lambda-test2:
 
 lambda-ssh:
 	docker run -it \
-	    -v "${shell pwd}/src:/app" \
+	    -v "${shell pwd}:/app" \
         --workdir "/app" \
 	    --entrypoint "/bin/bash" \
 	    cypresslambdafunction:cypress-lambda

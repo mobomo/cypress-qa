@@ -21,19 +21,7 @@ Feature: Body
     Then I should see the text "Unrecognized username or password"
     Then I should see the form "#user-login-form"
 
-  @login @e2e-test
-  Scenario: Can login as admin
-    Given I am on "/user"
-    Then I should see the form "#user-login-form"
-    When I fill out text fields with values
-      | label             | text                 |
-      | Username      | admin                 |
-      | Password      | admin                 |
-    When I submit the form
-    Then I should be on the user profile path
-    Then I preserve cookies
-
-  @content @e2e-test
+  @content @login @e2e-test
   Scenario: Can login as admin
     Given I am on "/user"
     Then I should see the form "#user-login-form"

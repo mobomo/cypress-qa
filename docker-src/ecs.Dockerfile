@@ -33,14 +33,14 @@ RUN npx cypress verify
 
 # Install the app dependencies
 RUN mkdir /app
-COPY src/package.json /app/package.json
-COPY src/package-lock.json /app/package-lock.json
+COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
 
 RUN npm install --prefix /app
 
 # Copy actual base cypress code
-COPY src/cypress /app/cypress
-COPY src/cypress.json /app/cypress.json
+COPY cypress /app/cypress
+COPY cypress.json /app/cypress.json
 
 # clean up
 RUN rm -rf /tmp/*

@@ -27,17 +27,17 @@ RUN npx cypress verify
 
 # Install the app dependencies
 RUN mkdir /app
-COPY src/package.json /app/package.json
-COPY src/package-lock.json /app/package-lock.json
+COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
 
 RUN npm install --prefix /app
 
 # Copy actual base cypress code
-COPY src/cypress /app/cypress
+COPY cypress /app/cypress
 RUN echo '{"projectID": "lambda"}' >> /app/cypress.json
 
 # Copy lambda function handler
-COPY src/functions/cypress.js lambda.js
+COPY functions/cypress.js lambda.js
 
 # clean up
 RUN rm -rf /tmp/*
