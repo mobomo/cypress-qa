@@ -28,9 +28,8 @@ local-debug:
 xpra-build:
 	docker build \
         --progress plain \
-        -f ./docker-src/Dockerfile \
-        --target xpra \
-        -t mobomo/cypress-xpra .
+        -f ./docker-src/xpra.Dockerfile \
+        -t mobomo/cypress:xpra .
 
 xpra-test:
 	docker run -it --rm \
@@ -38,7 +37,7 @@ xpra-test:
         -v "${shell pwd}:/app" \
         -e DISPLAY=:0 \
         -p 10000:10000 \
-        mobomo/cypress-xpra \
+        mobomo/cypress:xpra \
         xpra start \
         --bind-tcp=0.0.0.0:10000 \
         --start-child=xterm \

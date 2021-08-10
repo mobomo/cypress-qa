@@ -40,15 +40,6 @@ CMD ["npm", "run", "test"]
 
 RUN echo "set bell-style none" >> /etc/inputrc
 
-FROM base as xpra
-# Install Xpra
-RUN wget -q https://xpra.org/gpg.asc -O- | apt-key add -
-RUN wget https://xpra.org/repos/buster/xpra.list -O /etc/apt/sources.list.d/xpra.list
-RUN apt-get update
-
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get install -y xpra xpra-html5
-
 #FROM base as browsers
 #
 ## Install browsers
