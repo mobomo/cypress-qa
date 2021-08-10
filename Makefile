@@ -22,13 +22,15 @@ local-debug:
 	docker run -it \
         -v "${shell pwd}:/app" \
         -e DISPLAY=host.docker.internal:0 \
+        --entrypoint npm \
         mobomo/cypress \
-        npm run test:debug
+        run test:debug
 
 xpra-build:
 	docker build \
         --progress plain \
-        -f ./docker-src/xpra.Dockerfile \
+        -f ./docker-src/Dockerfile \
+        --target xpra \
         -t mobomo/cypress:xpra .
 
 xpra-test:
@@ -37,17 +39,7 @@ xpra-test:
         -v "${shell pwd}:/app" \
         -e DISPLAY=:0 \
         -p 10000:10000 \
-        mobomo/cypress:xpra \
-        xpra start \
-        --bind-tcp=0.0.0.0:10000 \
-        --start-child=xterm \
-        --html=on \
-        --daemon=no \
-        --modal-windows=true \
-        --video-encoders=nvenc \
-        --min-quality=100 \
-        --video-scaling=off \
-        --desktop-scaling=off
+        mobomo/cypress:xpra
 
 local-example:
 	docker run -it \

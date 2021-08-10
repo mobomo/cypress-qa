@@ -70,6 +70,15 @@ module.exports = (on, config) => {
         // launchOptions.preferences.width = 1920;
         // launchOptions.preferences.height = 1080;
       }
+      if (browser.name === 'chrome') {
+        // launchOptions.preferences.fullscreen = true;
+        // launchOptions.preferences.fullscreenable = false;
+        //launchOptions.preferences.maximizable = true;
+        launchOptions.preferences.maximized = false;
+        launchOptions.args.push('--window-size=1920,1080');
+        launchOptions.args.push('--window-position=500,768');
+        console.log("ADDED CHROME ARGS");
+      }
     }
 
     return launchOptions;
