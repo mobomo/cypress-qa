@@ -19,7 +19,7 @@ jobs:
 
   build:
     docker:
-      - image: cypress/included:8.2.0
+      - image: docker:17.05.0-ce-git
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_ACCESS_TOKEN
