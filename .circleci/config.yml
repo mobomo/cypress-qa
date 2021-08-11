@@ -28,6 +28,10 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
+          name: Login to DockerHub
+          command: |
+            echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+      - run:
           name: Build dockerfile
           command: |
             docker build --progress plain -f ./docker-src/Dockerfile --target base -t mobomo/cypress .
