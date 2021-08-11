@@ -10,8 +10,8 @@
     "test:debug": "cypress open --env TAGS='@content'",
     "test:content": "cypress open --env TAGS='@content'",
     "test:headed": "cypress run --headed --env TAGS='@content' --spec 'cypress/integration/**/*.feature'",
-    "ci:test": "cypress run --env TAGS='@steps' --spec 'cypress/integration/**/*.feature'",
-    "ci:debug": "cypress open --env TAGS='@steps'"
+    "ci:test": "cypress run --config-file cypress.ci.json --env TAGS='@steps' --spec 'cypress/integration/**/*.feature'",
+    "ci:debug": "cypress open --config-file cypress.ci.json --env TAGS='@steps'"
   },
   "author": "",
   "license": "Private",
