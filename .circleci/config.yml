@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Build dockerfile
           command: |
-            docker build --progress plain -f ./docker-src/Dockerfile --target base -t mobomo/cypress .
+            docker build --progress plain -f ./docker-src/Dockerfile --target release -t mobomo/cypress .
             docker build --progress plain -f ./docker-src/Dockerfile --target xpra -t mobomo/cypress:xpra .
             docker push mobomo/cypress:latest
             docker push mobomo/cypress:xpra

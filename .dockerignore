@@ -1,2 +1,6 @@
-src/cypress/videos
-src/cypress/screenshots
+cypress/integration/common/*/*.feature
+cypress/integration/common/*.feature
+cypress/integration/custom
+cypress/pages/custom
+cypress/videos
+cypress/screenshots
