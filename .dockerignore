@@ -1,6 +1,6 @@
 cypress/integration/common/*/*.feature
 cypress/integration/common/*.feature
 cypress/integration/custom/*
-cypress/pages/custom
+cypress/pages/custom/*
 cypress/videos
 cypress/screenshots
