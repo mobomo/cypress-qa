@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   docker: circleci/docker@1.5.0
+  aws-cli: circleci/aws-cli@1.3.0
 
 jobs:
   test:
@@ -38,6 +39,39 @@ jobs:
             docker push mobomo/cypress:latest
             docker build --progress plain -f ./docker-src/Dockerfile --target xpra -t mobomo/cypress:xpra .
             docker push mobomo/cypress:xpra
+  docs-build:
+    docker:
+      - image: cimg/node
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            npm install
+      - run:
+          name: Build docs
+          command: |
+            npm run docs
+      - persist_to_workspace:
+          root: "./"
+          paths:
+            - "~/docs/"
+  docs-push:
+    docker:
+      - image: aws-cli/default
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - aws-cli/setup
+      - run:
+          name: Build docs
+          command: |
+            npm install
+      - run:
+          name: Push to S3
+          command: |
+            aws s3 sync /tmp/workspace/ s3://qa.mobomo.net/docs --delete
+            aws cloudfront create-invalidation --distribution-id EMSVABI8DR6KJ --paths "/docs"
 
 workflows:
   version: 2
@@ -57,6 +91,16 @@ workflows:
           context: cypress-dockerhub
           requires:
             - approve-build
+      - approve-docs:
+          type: approval
           filters:
             branches:
-              only: master
+              only:
+                - master
+      - docs-build:
+          requires:
+            - approve-docs
+      - docs-push:
+          context: cypress-docs
+          requires:
+              - docs-build
