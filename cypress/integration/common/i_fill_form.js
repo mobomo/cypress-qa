@@ -222,6 +222,8 @@ When(/^I fill (?:out )(?:the )"([^"]*)"(?: field| element) with (?:|text )"([^"]
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
  *
  * @example
+ * // Types "text" into a field labeled "label"
+ * When I type "text" into the field labeled "label"
  *
  * @returns {Promise<*>} - Result
  */

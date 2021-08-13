@@ -350,7 +350,6 @@ Then(/^I should (|not )see elements with below text$/, (visible, dataTable) => {
  * @since 1.0.0
  *
  * @param {string} selector The CSS selector on which to operate
- * @param {string} text The text to match
  * @param {boolean} visible [true] Boolean denoting whether to check for visibility or presence
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
