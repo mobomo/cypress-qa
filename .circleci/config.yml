@@ -69,7 +69,7 @@ jobs:
       - run:
           name: Push to S3
           command: |
-            aws s3 sync /tmp/workspace/ s3://qa.mobomo.net/docs --delete
+            aws s3 sync /tmp/workspace/docs s3://qa.mobomo.net/docs --delete
             aws cloudfront create-invalidation --distribution-id EMSVABI8DR6KJ --paths "/docs"
 
 workflows:
