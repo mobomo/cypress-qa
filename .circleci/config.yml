@@ -55,7 +55,7 @@ jobs:
       - persist_to_workspace:
           root: "./"
           paths:
-            - "~/docs/"
+            - "docs/"
   docs-push:
     docker:
       - image: aws-cli/default
