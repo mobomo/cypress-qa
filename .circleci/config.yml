@@ -57,8 +57,7 @@ jobs:
           paths:
             - "docs/"
   docs-push:
-    docker:
-      - image: aws-cli/default
+    executor: aws-cli/default
     steps:
       - attach_workspace:
           at: /tmp/workspace
