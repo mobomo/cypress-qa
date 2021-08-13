@@ -4,7 +4,6 @@ orbs:
 
 jobs:
   test:
-    context: cypress-dockerhub
     docker:
       - image: cypress/included:8.2.0
     steps:
@@ -19,7 +18,6 @@ jobs:
             npm run ci:test
 
   build:
-    context: cypress-dockerhub
     docker:
       - image: docker:git
         auth:
@@ -45,7 +43,8 @@ workflows:
   version: 2
   commit:
     jobs:
-      - test
+      - test:
+          context: cypress-dockerhub
   build:
     jobs:
       - approve-build:
@@ -55,6 +54,7 @@ workflows:
               only:
                 - master
       - build:
+          context: cypress-dockerhub
           requires:
             - approve-build
           filters:
