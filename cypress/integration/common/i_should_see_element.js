@@ -290,7 +290,7 @@ const shouldSeeLink = (text, visible) => {
     }
 }
 
-When(/^I should (|not )see (?:|the )"([^"]*)" link$/, (visible, text) => {
+When(/^I should (|not )see (?:|the )"([^"]*)" link$/, function (visible, text) {
     shouldSeeLink(text, visible.length === 0);
 });
 

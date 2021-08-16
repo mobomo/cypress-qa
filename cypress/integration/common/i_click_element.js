@@ -31,7 +31,7 @@ const clickLink = (text) => {
     cy.getWithAlias('a').should('be.visible').contains(text).click();
 }
 
-When(/^I click (?:|on )the "([^"]*)" link$/, (text) => {
+When(/^I (?:click|press) (?:|on )the "([^"]*)" link$/, (text) => {
     clickLink(text);
 });
 
@@ -39,7 +39,7 @@ const clickButton = (text) => {
     cy.getWithAlias('a, input[type="submit"], button').should('be.visible').contains(text).click();
 }
 
-When(/^I click (?:|on )the "([^"]*)" button$/, (text) => {
+When(/^I (?:click|press) (?:|on )the "([^"]*)" button$/, (text) => {
     clickButton(text);
 });
 
@@ -47,7 +47,7 @@ const clickElement = (selector) => {
     cy.getWithAlias(selector).should('be.visible').click();
 }
 
-When(/^I click (?:|on )the "([^"]*)" element$/, (selector) => {
+When(/^I (?:click|press) (?:|on )the "([^"]*)" element$/, (selector) => {
     clickElement(selector)
 })
 
@@ -58,7 +58,7 @@ const clickText = (text) => {
     cy.containsWithAlias(text).should('be.visible').click();
 }
 
-When(/^I click (?:|on )"([^"]*)"$/, (something) => {
+When(/^I (?:click|press) (?:|on )"([^"]*)"$/, (something) => {
     clickText(something)
 });
 
@@ -68,7 +68,7 @@ const clickLinkIframe = (text) => {
     });
 }
 
-When(/^I click (?:|on )the "([^"]*)" link in iframe$/, (text) => {
+When(/^I (?:click|press) (?:|on )the "([^"]*)" link in iframe$/, (text) => {
     clickLinkIframe(text);
 });
 
@@ -78,7 +78,7 @@ const clickButtonIframe = (text) => {
     });
 }
 
-When(/^I click (?:|on )the "([^"]*)" button in iframe$/, (text) => {
+When(/^I (?:click|press) (?:|on )the "([^"]*)" button in iframe$/, (text) => {
     clickButtonIframe(text);
 });
 
@@ -88,7 +88,7 @@ const clickElementIframe = (selector) => {
     });
 }
 
-When(/^I click (?:|on )the "([^"]*)" element in iframe$/, (selector) => {
+When(/^I (?:click|press) (?:|on )the "([^"]*)" element in iframe$/, (selector) => {
     clickElementIframe(selector)
 })
 
@@ -98,7 +98,7 @@ const clickTextIframe = (text) => {
     });
 }
 
-When(/^I click (?:|on )"([^"]*)" in iframe$/, (something) => {
+When(/^I (?:click|press) (?:|on )"([^"]*)" in iframe$/, (something) => {
     clickElementOrTextInIframe(something)
 });
 

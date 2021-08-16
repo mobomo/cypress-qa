@@ -237,7 +237,7 @@ When(/^I type (?:|the )(?:|text )"([^"]*)" into (?:|the )(?:|element |field )lab
     typeInLabeledField(label, text);
 });
 
-When(/^I fill (?:|out )(?:|the )field labeled "([^"]*)" with (?:|text )"([^"]*)"$/, (label, text) => {
+When(/^I fill (?:|in |out )(?:|the )field labeled "([^"]*)" with (?:|text )"([^"]*)"$/, (label, text) => {
     typeInLabeledField(label, text);
 });
 
@@ -249,7 +249,7 @@ const typeInCKEditor = (label, text) => {
     })
 };
 
-When(/^I fill (?:|out )(?:|the )ckeditor labeled "([^"]*)" with (?:|text )"([^"]*)"$/, (label, text) => {
+When(/^I fill (?:|in |out )(?:|the )ckeditor labeled "([^"]*)" with (?:|text )"([^"]*)"$/, (label, text) => {
     typeInCKEditor(label, text);
 });
 
@@ -269,7 +269,7 @@ const typeInFields = (dataTable) => {
         throw new Error("datatable header does not match");
     }
 }
-When(/^I fill out (?:|text |labeled )(?:fields|elements) with(?:| values| text)$/, (dataTable) => {
+When(/^I fill (?:in|out) (?:|text |labeled )(?:fields|elements) with(?:| values| text)$/, (dataTable) => {
     typeInFields(dataTable);
 });
 
@@ -299,7 +299,7 @@ When(/^I type (?:|the )(?:|text )"([^"]*)" into (?:|the )(?:|element |field )lab
     typeInLabeledFieldIframe(label, text);
 });
 
-When(/^I fill out the field labeled "([^"]*)" with (?:|value |text )"([^"]*)" in iframe$/, (label, text) => {
+When(/^I fill (?:in|out) the field labeled "([^"]*)" with (?:|value |text )"([^"]*)" in iframe$/, (label, text) => {
     typeInLabeledFieldIframe(label, text);
 });
 
@@ -370,7 +370,7 @@ const selectLabeledField = (label, selection) => {
     })
 };
 
-When(/^I select "([^"]*)" in field labeled "([^"]*)"$/, (selection, label) => {
+When(/^I select "([^"]*)" (?:|in |from )(?:|the )field labeled "([^"]*)"$/, (selection, label) => {
     selectLabeledField(label, selection);
 });
 
