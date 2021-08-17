@@ -43,6 +43,21 @@ const scrollSelectorIntoView = (selector) => {
   cy.getOrContains(selector).should('be.visible').scrollIntoView();
 }
 
+/**
+ * Scroll to selector
+ *
+ * @step
+ * @description My description
+ *
+ * @When I scroll to selector
+ * @stepalias I scroll to the selector element
+ * @stepalias I scroll the selector element into view
+ *
+ * @summary
+ * Scrolls the page until the provided selector is viewable.
+ *
+ * @group samples
+ */
 When(/^I scroll(?:\sto)?(?:\sthe)? "([^"]*)"(?:\selement\sinto\sview)?/, (selector) => {
   scrollSelectorIntoView(selector);
 });

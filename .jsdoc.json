@@ -8,7 +8,7 @@
     "includePattern": ".js$",
     "excludePattern": "(node_modules/|docs)"
   },
-  "plugins": ["plugins/markdown"],
+  "plugins": ["plugins/markdown", "jsdoc-cypress-cucumber-plugin"],
   "templates": {
     "referenceTitle": "Mobomo Cypress QA",
     "collapse": true,

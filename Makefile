@@ -38,6 +38,8 @@ xpra-test:
         --name=cypress-xpra \
         -v "${shell pwd}:/app" \
         -e DISPLAY=:0 \
+        -e CYPRESS_DRUPAL_USER=admin \
+        -e CYPRESS_DRUPAL_PASS=admin \
         -p 10000:10000 \
         mobomo/cypress:xpra
 

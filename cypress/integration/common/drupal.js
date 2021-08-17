@@ -10,6 +10,20 @@ When(/^I am on the login screen"$/, () => {
   Drupal.visit('/')
 });
 
+
+When(/^I enter test credentials$/, () => {
+
+  let username = Cypress.env("DRUPAL_USER");
+  let password = Cypress.env("DRUPAL_PASS");
+
+  cy.getWithAlias('label').contains('Username').then( (el) => {
+    cy.getWithAlias('#' + el.attr('for')).type(username);
+  })
+  cy.getWithAlias('label').contains('Password').then( (el) => {
+    cy.getWithAlias('#' + el.attr('for')).type(password, {log: false});
+  })
+});
+
 When(/^I log in with username "(.*)" and password "(.*)"$/, (username, password) => {
   Drupal.login(username, password);
 });

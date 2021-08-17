@@ -82,7 +82,7 @@ exports.handler = async (event, context) => {
             var s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
             var uploadParams = {Bucket: process.env.RESULTS_BUCKET, Key: '', Body: ''};
-            var file = '/tmp/tests/cypress/videos/custom/testcase.feature.mp4';
+            var file = '/tmp/tests/cypress/videos/custom/login.feature.mp4';
 
             // Configure the file stream and obtain the upload parameters
             var fs = require('fs');

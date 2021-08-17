@@ -1,0 +1,8 @@
+{
+    "cucumberautocomplete.steps": [
+        "cypress/integration/common/*.js"
+    ],
+    "editor.quickSuggestions": true,
+    "cucumberautocomplete.strictGherkinCompletion": true,
+    "cucumberautocomplete.stepRegExSymbol": "/"
+}
