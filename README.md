@@ -1,7 +1,7 @@
 # Cypress QA
 
 ## Requirements
-Docker https://docs.docker.com/get-docker/
+- Docker https://docs.docker.com/get-docker/
 
 
 ## Building
@@ -149,13 +149,14 @@ unless you know what it does. This is done right now to make the "feel-lucky" fe
 ## Serverless (Lambda + ECS Task)
 
 ### Requirements
-Docker https://docs.docker.com/get-docker/
-AWS CLI https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
-SAM CLI https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
+- Docker https://docs.docker.com/get-docker/
+- AWS CLI https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
+- SAM CLI https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 
 ### Installing
 
-- Clone repo
+- `git clone https://github.com/mobomo/cypress-qa`
+- `cd cypress-qa`
 - `sam build`
 - `sam local start-api`
 
