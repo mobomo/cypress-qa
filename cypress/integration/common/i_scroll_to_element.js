@@ -7,6 +7,7 @@ import { When } from 'cypress-cucumber-preprocessor/steps';
 
 /**
  * Scroll Into View by CSS Selector
+ * 
  * @description
  * This step definition will scroll the viewport window
  * until the provided selector is visible on the page.
@@ -44,19 +45,21 @@ const scrollSelectorIntoView = (selector) => {
 }
 
 /**
- * Scroll to selector
- *
  * @step
- * @description My description
  *
- * @When I scroll to selector
- * @stepalias I scroll to the selector element
- * @stepalias I scroll the selector element into view
+ * @When I scroll to <code>selector</code>
+ *
+ * @param {string} selector The CSS selector on which to operate
+ *
+ * @stepalias I scroll to the <code>selector</code> element
+ * @stepalias I scroll the <code>selector</code> element into view
  *
  * @summary
- * Scrolls the page until the provided selector is viewable.
+ * This step definition will scroll the viewport window
+ * until the provided selector is visible on the page.
  *
- * @group samples
+ * @group Scrolling
+ * @see {@link scrollSelectorIntoView}
  */
 When(/^I scroll(?:\sto)?(?:\sthe)? "([^"]*)"(?:\selement\sinto\sview)?/, (selector) => {
   scrollSelectorIntoView(selector);
@@ -106,6 +109,21 @@ const scrollToSelectorTopOrBottom = (positionType, selector) => {
   cy.get(selector).should('exist').scrollTo(positionType, {ensureScrollable: false});
 }
 
+/**
+ * @step
+ *
+ * @When I scroll to the <code>position</code> of <code>selector</code>
+ * @stepalias I scroll the <code>position</code> of <code>selector</code> into view
+ *
+ * @param {string} position One of: `topLeft` | `top` | `topRight` | `left` | `center` | `right` | `bottomLeft` | `bottom` | `bottomRight`
+ * @param {string} selector The CSS selector on which to operate
+ *
+ * @summary
+ * This step definition will verify that a form is visible, triggering a failure if not
+ *
+ * @group Scrolling
+ * @see {@link scrollToSelectorTopOrBottom}
+ */
 When(/^I scroll(?:\sthe)?(?:\sto)?(?:\sthe) (topLeft|top|topRight|left|center|right|bottomLeft|bottom|bottomRight) of "([^"]*)"(?:\sinto)?(?:\sview)?/, (position, selector) => {
   scrollToSelectorTopOrBottom(position, selector);
 });

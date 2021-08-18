@@ -36,10 +36,38 @@ const navigateToURLorPath = (route) => {
   cy.visit(route);
 }
 
+/**
+ * @step
+ *
+ * @When I go to <code>uri</code>
+ * @stepalias I navigate to <code>uri</code>
+ *
+ * @param {string} uri The URI to navigate to
+ *
+ * @summary
+ * This step definition will navigate the browser to `uri`
+ *
+ * @group Navigation
+ * @see {@link navigateToURLorPath}
+ */
 When(`I navigate/go to {string}`, (route) => {
   navigateToURLorPath(route);
 });
 
+/**
+ * @step
+ *
+ * @Given I am on <code>uri</code>
+ * @stepalias I am at <code>uri</code>
+ *
+ * @param {string} uri The URI to navigate to
+ *
+ * @summary
+ * This step definition will navigate the browser to `uri`
+ *
+ * @group Navigation
+ * @see {@link navigateToURLorPath}
+ */
 Given(`I am on/at {string}`, (route) => {
   if (route === 'the homepage') {
     navigateToURLorPath('/');

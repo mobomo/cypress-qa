@@ -21,6 +21,6 @@
     "encoding": "utf8",
     "private": false,
     "recurse": true,
-    "template": "./node_modules/braintree-jsdoc-template"
+    "template": "./src/jsdoc-template"
   }
 }

@@ -7,6 +7,7 @@ import { When } from 'cypress-cucumber-preprocessor/steps';
 
 /**
  * Scroll Into View by CSS Selector
+ *
  * @description
  * This step definition will scroll the viewport window to the top or
  * bottom of the page.
@@ -35,6 +36,20 @@ const scrollPageExtremity = position => {
   cy.scrollTo(position);
 }
 
+/**
+ * @step
+ *
+ * @When I scroll to <code>position</code> of the page
+ * @stepalias I go to <code>position</code> of the page
+ *
+ * @param {string} position One of: `top` | `bottom`
+ *
+ * @summary
+ * This step definition will scroll to the specified position of the page
+ *
+ * @group Scrolling
+ * @see {@link scrollPageExtremity}
+ */
 When(/^I (?:go|scroll) to the (top|bottom) of the page$/, (position) => {
   scrollPageExtremity(position)
 });

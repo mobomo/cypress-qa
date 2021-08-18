@@ -1,0 +1,62 @@
+<?js
+  var data = obj;
+  var self = this;
+?>
+
+<?js console.log(data) ?>
+
+<div class="step-container">
+  <h5 class="name" id="<?js= typeof id === 'undefined' ? '' : id ?>"><?js= data.stepKey ?> <?js= data.expression ?></h5>
+  <div class="description">
+    <?js data.stepAliases && data.stepAliases.forEach(function(a) { ?>
+      <p><?js= data.stepKey ?> <?js= a ?></p>
+    <?js }) ?>
+    <p><?js= data.summary ?></p>
+  </div>
+
+  <?js if (data.params && params.length && !data.hideconstructor) { ?>
+    <h5>Parameters:</h5>
+    <?js= this.partial('params.tmpl', params) ?>
+  <?js } ?>
+
+    <?js if (data.examples && data.examples.length) { ?>
+    <h5>Example<?js= data.examples.length > 1? 's':'' ?></h5>
+    <?js= self.partial('examples.tmpl', data.examples) ?>
+  <?js } ?>
+
+<dl class="details">
+  <?js if(data.needs && data.needs.length > -1) { ?>
+    <dt class="tag-source">Needs:</dt>
+    <dd class="tag-source">
+      <ul>
+        <?js data.needs.forEach((e, i) => { ?>
+          <li><?js= self.linkto(e.ref, e.context) ?></li>
+        <?js }) ?>
+      </ul>
+    </dd> |
+  <?js } ?>
+    <?js if(data.provides && provides.length > -1) { ?>
+        <dt class="tag-provides">Provides:</dt>
+        <dd class="tag-provides"><ul class="dummy"><li><?js= data.provides ?></li></ul></dd> |
+    <?js } ?>
+    <dt class="tag-name">Reference name:</dt>
+    <dd class="tag-name"><ul class="dummy"><li><?js= data.name ?></li></ul></dd>
+    <?js if(data.group && data.group.length > -1) { ?>
+        | <dt class="tag-group">Step group:</dt>
+        <dd class="tag-group"><ul class="dummy"><li><?js= data.group ?></li></ul></dd>
+    <?js } ?>
+    <?js if (data.see && see.length) {?>
+        | <dt class="tag-see">See:</dt>
+        <dd class="tag-see">
+        <ul>
+            <?js see.forEach(function(s) { ?>
+            <li>
+                <?js= self.linkto(s) ?>
+            </li>
+            <?js }); ?>
+        </ul>
+        </dd>
+    <?js } ?>
+  </dl>
+
+</div>

@@ -10,9 +10,21 @@ When(/^I am on the login screen"$/, () => {
   Drupal.visit('/')
 });
 
-
-When(/^I enter test credentials$/, () => {
-
+/**
+ * Enter Test Credentials
+ *
+ * @description
+ * This step definition will enter the username and password into fields labeled
+ * "Username" and "Password", the credentials which correspond to environment variables:
+ *
+ * `CYPRESS_DRUPAL_USER` and `CYPRESS_DRUPAL_PASS`
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @returns {Promise<*>} - Result
+ */
+const enterTestCredentials = () => {
   let username = Cypress.env("DRUPAL_USER");
   let password = Cypress.env("DRUPAL_PASS");
 
@@ -22,24 +34,119 @@ When(/^I enter test credentials$/, () => {
   cy.getWithAlias('label').contains('Password').then( (el) => {
     cy.getWithAlias('#' + el.attr('for')).type(password, {log: false});
   })
+}
+
+/**
+ * @step
+ *
+ * @When I enter test credentials
+ *
+ * @summary
+ * This step definition will enter secret credentials specified as environment variables
+ *
+ * @group Drupal
+ * @see {@link enterTestCredentials}
+ */
+When(/^I enter test credentials$/, () => {
+  enterTestCredentials();
 });
 
+/**
+ * @step
+ *
+ * @When I log in with username <code>username</code> and password <code>password</code>
+ *
+ * @param {string} username The username to log in with
+ * @param {string} password The password to log in with
+ *
+ * @summary
+ * This step definition will login with `username` and `password` credentials
+ *
+ * @group Drupal
+ * @see {@link Drupal.login}
+ */
 When(/^I log in with username "(.*)" and password "(.*)"$/, (username, password) => {
   Drupal.login(username, password);
 });
 
-When(/^I should be on the user profile path$/, () => {
+/**
+ * Verify User Profile Path
+ *
+ * @description
+ * This step definition will verify that our current path is `/user/<id>`
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @returns {Promise<*>} - Result
+ */
+const verifyUserProfilePath = () => {
   cy.url().then((data) => {
     let url = data.split('/');
     expect(url[url.length - 2]).to.equal('user');
     expect(parseInt(url[url.length - 1])).to.be.a('number');
   });
+}
+
+/**
+ * @step
+ *
+ * @When I should be on the user profile path
+ *
+ * @summary
+ * This step definition will verify that our current path is `/user/<id>`
+ *
+ * @group Drupal
+ * @see {@link verifyUserProfilePath}
+ */
+When(/^I should be on the user profile path$/, () => {
+  verifyUserProfilePath();
 });
 
-When(/^I wait for AJAX to complete$/, () => {
+/**
+ * Wait For Ajax
+ *
+ * @description
+ * This step definition will wait for the ajax throbber to get removed from the DOM
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @returns {Promise<*>} - Result
+ */
+const waitForAjax = () => {
   cy.get('.ajax-progress-throbber').should('not.exist');
+};
+
+/**
+ * @step
+ *
+ * @When I wait for AJAX to complete
+ *
+ * @summary
+ * This step definition will wait for the ajax throbber to get removed from the DOM
+ *
+ * @group Drupal
+ * @see {@link waitForAjax}
+ */
+When(/^I wait for AJAX to complete$/, () => {
+  waitForAjax();
 });
 
+/**
+ * Fill Drupal DateTime Field
+ *
+ * @description
+ * This step definition will fill a Drupal DateTime field with `time`
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @param {string} label The label associated with the element
+ * @param {string} time The time formatted `dd M yyyy hh:mm`
+ *
+ * @returns {Promise<*>} - Result
+ */
 const setDateTimeLabeledField = (label, time) => {
 
   let dateTime;
@@ -68,6 +175,26 @@ const setDateTimeLabeledField = (label, time) => {
   })
 };
 
-When(/^I fill out datetime field "([^"]*)" with "([^"]*)"$/, (label, time) => {
-  setDateTimeLabeledField(label, time);
+/**
+ * @step
+ *
+ * @When I fill out datetime field <code>label</code> with <code>datetime</code>
+ *
+ * @param {string} label The label associated with the element
+ * @param {string} datetime The Drupal DateTime formatted `dd M yyyy hh:mm`
+ *
+ * @summary
+ * This step definition will fill out a Drupal DateTime field
+ *
+ * @group Form filling - Date and time
+ * @see {@link setDateTimeLabeledField}
+ *
+ * @example
+ * When I fill out datetime field "Begin Date" with "now"
+ *
+ * @example
+ * When I fill out datetime field "End Date" with "01 Jan 2025 20:10"
+ */
+When(/^I fill out datetime field "([^"]*)" with "([^"]*)"$/, (label, datetime) => {
+  setDateTimeLabeledField(label, datetime);
 });

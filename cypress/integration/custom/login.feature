@@ -7,7 +7,6 @@ Feature: Body
       | selector  | text     |
       | label     | Username |
       | label     | Password |
-    When I set context to ".usa-footer__primary-section"
 
   @login @e2e-test
   Scenario: Fill login form with wrong password
