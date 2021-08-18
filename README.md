@@ -20,7 +20,7 @@ Now a mobomo/cypress image is ready for you to use. Test it to be sure it works.
 Anything inside your `tests` folder will follow the same structure as here https://github.com/mobomo/cypress-qa/tree/master/cypress
 
 ```
-test/
+tests/
   fixtures/
     *.*
   integration/
