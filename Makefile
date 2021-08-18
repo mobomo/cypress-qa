@@ -10,13 +10,15 @@ local-build:
 	docker build \
         --progress plain \
         -f ./docker-src/Dockerfile \
-        --target base \
+        --target release \
         -t mobomo/cypress .
 
 local-test:
 	docker run -it \
         -v "${shell pwd}:/app" \
-        mobomo/cypress
+        --entrypoint npm \
+        mobomo/cypress \
+        run ci:test
 
 local-debug:
 	docker run -it \

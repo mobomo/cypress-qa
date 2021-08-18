@@ -7,7 +7,7 @@ import { When } from 'cypress-cucumber-preprocessor/steps';
 
 /**
  * Scroll Into View by CSS Selector
- * 
+ *
  * @description
  * This step definition will scroll the viewport window
  * until the provided selector is visible on the page.
