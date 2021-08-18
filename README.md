@@ -102,7 +102,7 @@ And visit http://localhost:10000. You'll see a terminal window, where you can en
 
 ### Credentials
 
-If you have some special credentials you want to pass in to use with the `When I log in with test credentials` step, use the environment variables (which you can set with the `docker run` argument `-e` and CircleCI settings).
+If you have some special credentials you want to pass in to use with the `When I enter test credentials` step, use the environment variables (which you can set with the `docker run` argument `-e` and CircleCI settings).
 ```
 CYPRESS_DRUPAL_USER="<username>"
 CYPRESS_DRUPAL_PASS="<password>"
