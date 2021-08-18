@@ -17,6 +17,15 @@ jobs:
           name: Run tests
           command: |
             npm run ci:test
+      - store_test_results:
+          path:
+            test-results
+      - store_artifacts:
+          path:
+            cypress/videos
+      - store_artifacts:
+          path:
+            cypress/screenshots
 
   build:
     docker:
