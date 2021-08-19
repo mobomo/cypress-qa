@@ -326,7 +326,7 @@ When(/^I fill (?:|in |out )(?:|the )field labeled "([^"]*)" with (?:|text )"([^"
  * @returns {Promise<*>} - Result
  */
 const typeInCKEditor = (label, text) => {
-    cy.getWithAlias('label').contains(label).then( (el) => {
+    cy.getWithAlias(`label:contains('${label}')`).then( (el) => {
         cy.getWithAlias('#cke_' + el.attr('for') + ' iframe').withinIframe('body', (el) => {
             el.type(text);
         })
@@ -510,7 +510,8 @@ const checkField = (selector, check = true) => {
  * @returns {Promise<*>} - Result
  */
 const checkLabeledField = (label, check = true) => {
-    cy.getWithAlias('label').contains(label).then( (el) => {
+    cy.getWithAlias(`label:contains('${label}')`).then( (el) => {
+        cy.log(el.attr('for'));
         checkField('#' + el.attr('for'), check);
     })
 };
@@ -692,7 +693,7 @@ When(/^I select "([^"]*)" in "([^"]*)"$/, (selection, selector) => {
  * @returns {Promise<*>} - Result
  */
 const selectLabeledField = (label, selection) => {
-    cy.getWithAlias('label').contains(label).then( (el) => {
+    cy.getWithAlias(`label:contains('${label}')`).then( (el) => {
         selectField('#' + el.attr('for'), selection);
     })
 };
@@ -838,7 +839,7 @@ When(/^I fill out the field "([^"]*)" with date "([^"]*)"$/, (selector, date) =>
  * @returns {Promise<*>} - Result
  */
 const setDateLabeledField = (label, selection) => {
-    cy.getWithAlias('label').contains(label).then( (el) => {
+    cy.getWithAlias(`label:contains('${label}')`).then( (el) => {
         setDateField('#' + el.attr('for'), selection);
     })
 };
@@ -920,7 +921,7 @@ When(/^I fill out the field "([^"]*)" with time "([^"]*)"$/, (selector, time) =>
  * @returns {Promise<*>} - Result
  */
 const setTimeLabeledField = (label, time) => {
-    cy.getWithAlias('label').contains(label).then( (el) => {
+    cy.getWithAlias(`label:contains('${label}')`).then( (el) => {
         setDateField('#' + el.attr('for'), time);
     })
 };

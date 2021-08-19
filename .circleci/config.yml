@@ -89,7 +89,7 @@ workflows:
           context: cypress-dockerhub
   build:
     jobs:
-      - approve-build:
+      - approve-all:
           type: approval
           filters:
             branches:
@@ -98,16 +98,10 @@ workflows:
       - build:
           context: cypress-dockerhub
           requires:
-            - approve-build
-      - approve-docs:
-          type: approval
-          filters:
-            branches:
-              only:
-                - master
+            - approve-all
       - docs-build:
           requires:
-            - approve-docs
+            - approve-all
       - docs-push:
           context: cypress-docs
           requires:
