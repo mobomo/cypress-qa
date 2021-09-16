@@ -1,7 +1,7 @@
 {
-  "name": "cypress-cucumber-example",
+  "name": "cypress-qa",
   "version": "1.0.0",
-  "description": "An example for Cypress and Cucumber usage",
+  "description": "A Drupal-optimized Cypress Cucumber test definition suite",
   "main": "index.js",
   "scripts": {
     "docs": "jsdoc --configure .jsdoc.json --verbose",
