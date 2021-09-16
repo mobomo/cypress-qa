@@ -7,7 +7,7 @@ import { Given, When, And } from 'cypress-cucumber-preprocessor/steps';
 import Drupal from '../../pages/drupal';
 
 When(/^I am on the login screen"$/, () => {
-  Drupal.visit('/')
+  Drupal.visit('/user')
 });
 
 /**
