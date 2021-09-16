@@ -1,9 +1,0 @@
-{
-  "baseUrl": "https://www.pandemicoversight.gov",
-  "ignoreTestFiles": ["*.js", "*.md"],
-  "reporter": "junit",
-  "reporterOptions": {
-    "mochaFile": "test-results/test-output-[hash].xml"
-  },
-  "chromeWebSecurity": false
-}

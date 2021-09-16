@@ -1,0 +1,38 @@
+version: 2.1
+
+jobs:
+  test:
+    working_directory: /app
+    parallelism: 1
+    docker:
+      - image: mobomo/cypress
+    steps:
+      - checkout:
+          path: ~/project
+      - run:
+          name: Prepare for testing
+          command: |
+            cp -r ~/project/tests/* /app/cypress
+            cp ~/project/tests/cypress.json /app
+      - run:
+          name: Testing
+          command: |
+            npx cypress run --env TAGS="@e2e-test" --spec "cypress/integration/**/*.feature"
+      - store_test_results:
+          path: /app/test-results
+      - store_artifacts:
+          path: /app/cypress/videos
+      - store_artifacts:
+          path: /app/cypress/screenshots
+
+workflows:
+  version: 2
+
+  test:
+    jobs:
+      - approve-test:
+          type: approval
+      - test:
+          context: cypress-dockerhub
+          requires:
+            - approve-test
