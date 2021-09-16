@@ -79,7 +79,7 @@ jobs:
           name: Push to S3
           command: |
             aws s3 sync /tmp/workspace/docs s3://qa.mobomo.net/docs --delete
-            aws cloudfront create-invalidation --distribution-id EMSVABI8DR6KJ --paths "/docs" "/docs/*"
+            aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION_ID --paths "/docs" "/docs/*"
 
 workflows:
   version: 2
