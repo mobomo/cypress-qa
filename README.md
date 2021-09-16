@@ -1,8 +1,11 @@
 # Cypress QA
 
+A Drupal-optimized Cypress Cucumber test definition suite
+
+Full documentation can be found here: https://qa.mobomo.net/docs/
+
 ## Requirements
 - Docker https://docs.docker.com/get-docker/
-
 
 ## Building
 - `git clone https://github.com/mobomo/cypress-qa`
@@ -116,11 +119,9 @@ It will run the scenarios tagged with `@e2e-test` your `.feature` files.
 ```
   test:
     working_directory: /app
+    parallelism: 1
     docker:
       - image: mobomo/cypress
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_ACCESS_TOKEN
     steps:
       - checkout:
           path: ~/project
@@ -132,19 +133,14 @@ It will run the scenarios tagged with `@e2e-test` your `.feature` files.
       - run:
           name: Testing
           command: |
-            cypress run --env TAGS='@e2e-test'
+            npx cypress run --env TAGS="@e2e-test" --spec "cypress/integration/**/*.feature"
+      - store_test_results:
+          path: /app/test-results
       - store_artifacts:
-          path:
-            /app/cypress/videos
+          path: /app/cypress/videos
       - store_artifacts:
-          path:
-            /app/cypress/screenshots
+          path: /app/cypress/screenshots
 ```
-
-## Warning
-
-In cypress.json you can check the "chromeWebSecurity" property disabled. Please, do not use it
-unless you know what it does. This is done right now to make the "feel-lucky" feature to work.
 
 ## Serverless (Lambda + ECS Task)
 
