@@ -6,7 +6,7 @@ orbs:
 jobs:
   test:
     docker:
-      - image: cypress/included:8.2.0
+      - image: cypress/included:9.5.0
     steps:
       - checkout
       - run:
@@ -50,7 +50,7 @@ jobs:
             docker push mobomo/cypress:xpra
   docs-build:
     docker:
-      - image: cimg/node:14.16.0
+      - image: cimg/node:16.3.0
     steps:
       - checkout
       - run:

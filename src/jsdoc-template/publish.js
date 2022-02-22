@@ -635,6 +635,7 @@ exports.publish = function (taffyData, opts, tutorials) {
     indexUrl);
 
     // set up the lists that we'll use to generate pages
+  var steps = taffy(members.steps);
   var classes = taffy(members.classes);
   var modules = taffy(members.modules);
   var namespaces = taffy(members.namespaces);
@@ -643,6 +644,7 @@ exports.publish = function (taffyData, opts, tutorials) {
   var interfaces = taffy(members.interfaces);
 
   Object.keys(helper.longnameToUrl).forEach(function (longname) {
+    
     var myModules = helper.find(modules, {longname: longname});
 
     if (myModules.length) {
