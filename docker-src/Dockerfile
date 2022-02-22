@@ -1,4 +1,4 @@
-FROM cypress/included:9.5.0 as base
+FROM cypress/included:9.0.0 as base
 
 ENV XDG_CONFIG_HOME="/tmp"
 ENV XDG_RUNTIME_DIR="/tmp"
