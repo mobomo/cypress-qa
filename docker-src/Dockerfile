@@ -20,6 +20,7 @@ FROM base as release
 # Copy actual base cypress code
 COPY cypress /app/cypress
 COPY cypress.json /app/cypress.json
+RUN mkdir /app/cypress/videos
 
 FROM base as xpra
 
@@ -42,3 +43,4 @@ RUN rm -rf /tmp/*
 # Copy actual base cypress code
 COPY cypress /app/cypress
 COPY cypress.json /app/cypress.json
+RUN mkdir /app/cypress/videos
