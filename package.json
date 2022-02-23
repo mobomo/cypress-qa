@@ -19,7 +19,7 @@
     "aws-sdk": "^2.951.0",
     "axios": "^0.21.0",
     "braintree-jsdoc-template": "^3.3.0",
-    "cypress": "^8.2.0",
+    "cypress": "^9.0.0",
     "cypress-cucumber-preprocessor": "^4.2.0",
     "express": "^4.17.1",
     "fs-extra": "^10.0.0",

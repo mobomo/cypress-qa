@@ -152,6 +152,9 @@ Cypress.Commands.overwrite('as', (originalFn, obj, alias) => {
 
 Cypress.Commands.add('resetContext', () => {
     let aliases = cy.state('aliases');
+    if (typeof aliases === 'undefined') {
+        aliases = {};
+    }
     aliases['_context'] = undefined;
     cy.state('aliases', aliases);
 });
